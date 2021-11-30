@@ -1,5 +1,6 @@
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/selected_task_cubit.dart';
+import 'package:devject_single/cubit/settings_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/pages/add_project_page.dart';
 import 'package:devject_single/pages/add_task_page.dart';
@@ -29,7 +30,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => TasksCubit()),
         BlocProvider(create: (context) => SelectedTaskCubit()),
         BlocProvider(create: (context) => ProjectsCubit()),
-        BlocProvider(create: (context) => SelectedProjectCubit())
+        BlocProvider(create: (context) => SelectedProjectCubit()),
+        BlocProvider(create: (context) => SettingsCubit())
       ],
       child: MaterialApp(
         title: 'Devject Single',
@@ -44,7 +46,6 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate
         ],
         initialRoute: MainPage.routeName,
-        // home: const MainPage(),
         routes: {
           MainPage.routeName: (context) => const MainPage(),
           ProjectPage.routeName: (context) => const ProjectPage(),

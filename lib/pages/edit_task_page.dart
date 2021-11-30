@@ -5,7 +5,7 @@ import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/task.dart';
 import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/providers/tasks_provider.dart';
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
 import 'package:devject_single/widgets/button.dart';
@@ -285,11 +285,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
           borderRadius: BorderRadius.circular(30),
           onTap: () async {
             if (_controller.text.trim() == BlocProvider.of<SelectedTaskCubit>(context).state!.name) {
-              await TaskProvider.remove(BlocProvider.of<SelectedTaskCubit>(context).state!.id!);
+              final TasksProvider _tasksProvider = TasksProvider.instance;
+              await _tasksProvider.remove(BlocProvider.of<SelectedTaskCubit>(context).state!.id!);
               final selectedTaskCubit = BlocProvider.of<SelectedTaskCubit>(context);
               if (selectedTaskCubit.state?.parentId != null) {
                 selectedTaskCubit.select(
-                  await TaskProvider.getOne(selectedTaskCubit.state!.parentId!)
+                  await _tasksProvider.getOne(selectedTaskCubit.state!.parentId!)
                 );
                 await BlocProvider.of<TasksCubit>(context).load(
                   BlocProvider.of<SelectedProjectCubit>(context).state!.id!,
@@ -301,16 +302,16 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 );
               }
               if (selectedTaskCubit.state?.parentId != null) {
-                await TaskProvider.recalculateProgressFor(
-                  await TaskProvider.getOne(selectedTaskCubit.state!.parentId!)
+                await _tasksProvider.recalculateProgressFor(
+                  await _tasksProvider.getOne(selectedTaskCubit.state!.parentId!)
                 );
               } else {
-                await ProjectsProvider.recalculateProgressFor(
+                await ProjectsProvider.instance.recalculateProgressFor(
                   BlocProvider.of<SelectedProjectCubit>(context).state!.id!
                 );
               }
               await BlocProvider.of<SelectedProjectCubit>(context).select(
-                await ProjectsProvider.getOne(
+                await ProjectsProvider.instance.getOne(
                   BlocProvider.of<SelectedProjectCubit>(context).state!.id!
                 )
               );

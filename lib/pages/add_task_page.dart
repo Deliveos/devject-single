@@ -6,7 +6,7 @@ import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/task.dart';
 import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/providers/tasks_provider.dart';
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
 import 'package:devject_single/widgets/button.dart';
@@ -146,15 +146,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   );
                                   await BlocProvider.of<TasksCubit>(context).add(task);
                                   if (task.parentId != null) {
-                                    await TaskProvider.recalculateProgressFor(
-                                      await TaskProvider.getOne(task.parentId!)
+                                    await TasksProvider.instance.recalculateProgressFor(
+                                      await TasksProvider.instance.getOne(task.parentId!)
                                     );
                                   } else {
-                                    await ProjectsProvider.recalculateProgressFor(
+                                    await ProjectsProvider.instance.recalculateProgressFor(
                                       task.projectId
                                     );
                                   }
-                                  final project = await ProjectsProvider.getOne(task.projectId);
+                                  final project = await ProjectsProvider.instance.getOne(task.projectId);
                                   BlocProvider.of<SelectedProjectCubit>(context).select(project);
                                   await BlocProvider.of<ProjectsCubit>(context).load();
                                   Navigator.pop(context);

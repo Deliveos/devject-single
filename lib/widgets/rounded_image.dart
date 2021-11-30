@@ -1,4 +1,4 @@
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:flutter/material.dart';
 
 class RoundedImage extends StatelessWidget {

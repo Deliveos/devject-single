@@ -3,7 +3,7 @@ import 'package:devject_single/cubit/selected_task_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/task.dart';
 import 'package:devject_single/pages/task_page.dart';
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/backdrop_filter_container.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/gestures.dart';
@@ -23,7 +23,7 @@ class TaskContainer extends StatelessWidget {
     final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
     return BackdropFilterContaiter(
       margin: EdgeInsets.symmetric(vertical: ScreenSize.height(context, 1)),
-      padding: EdgeInsets.all(AppSize.width(context, 20)),
+      padding: EdgeInsets.all(ScreenSize.width(context, 5)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,

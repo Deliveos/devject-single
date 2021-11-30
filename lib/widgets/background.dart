@@ -1,4 +1,4 @@
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:flutter/material.dart';
 
 class Background extends StatelessWidget {
@@ -17,16 +17,7 @@ class Background extends StatelessWidget {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
-        // image: const DecorationImage(image: AssetImage("assets/images/avatar_example.jpg"), fit: BoxFit.fill)
-        // gradient: LinearGradient(
-        //   colors: [
-        //     Theme.of(context).colorScheme.background,
-        //     Theme.of(context).colorScheme.onBackground
-        //   ],
-        //   begin: Alignment.topCenter,
-        //   end: Alignment.bottomCenter
-        // )
+        color: Theme.of(context).colorScheme.background
       ),
       child: child,
     );

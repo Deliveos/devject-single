@@ -6,17 +6,19 @@ class ProjectsCubit extends Cubit<List<Project>> {
     load();
   }
 
+  final ProjectsProvider _provider = ProjectsProvider.instance;
+
   Future<void> load() async {
-    emit(await ProjectsProvider.get());
+    emit(await _provider.get());
   }
 
   Future<void> add(Project project) async {
-    await ProjectsProvider.add(project);
+    await _provider.add(project);
     await load();
   }
 
   Future<void> update(Project project) async {
-    await ProjectsProvider.update(project);
+    await _provider.update(project);
     await load();
   }
 }

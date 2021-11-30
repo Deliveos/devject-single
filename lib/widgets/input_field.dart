@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'input_text_editing_controller.dart';
 
 /// Custom TextFormField with dynamic validator
-
-
 class InputField extends StatefulWidget {
   const InputField({
     Key? key, 
@@ -22,8 +20,7 @@ class InputField extends StatefulWidget {
     this.readOnly = false,
     this.maxLength,
     this.initialValue
-  }) : //assert(controller == null && validator != null, "Validator can not be used without controller"),
-  super(key: key);
+  }) : super(key: key);
   
   final InputTextEditingController? controller;
   final TextInputType? keyboardType;

@@ -1,4 +1,19 @@
 class Task {
+  /// Unique index for every task
+  final int? id;
+  /// Task name
+  final String name;
+  /// Can be used to supplement information about task
+  final String? description;
+  final int projectId;
+  final int? parentId;
+  /// Start date of the task
+  final DateTime? startDate;
+  /// End date of the task
+  final DateTime? endDate;
+  /// Task progress as a percentage
+  final int progress;
+  
   Task({
     this.id,
     required this.name, 
@@ -10,15 +25,18 @@ class Task {
     this.progress = 0
   });
 
-  final int? id;
-  final String name;
-  final String? description;
-  final int projectId;
-  final int? parentId;
-  final DateTime? startDate;
-  final DateTime? endDate;
-  final int progress;
-
+  /// Create `Task` instance from `Map<String, dynamic>`.
+  /// Map example:
+  /// ```
+  /// {
+  ///   "id": 1,  
+  ///   "name": "Example task",
+  ///   "description": "Example task",
+  ///   "start_date": null,
+  ///   "end_date": null,
+  ///   "progress": 100
+  /// }
+  /// ```
   Task.fromMap(Map<String, dynamic> map):
   id = map['id'],
   name = map['name'], 
@@ -29,6 +47,7 @@ class Task {
   endDate = map['end_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['end_date']) : null,
   progress = map['progress'];
 
+  /// Convert `Task` instance to `Map<String, dynamic>`
   Map<String, dynamic> toMap() => <String, dynamic>{
     'id': id,
     'name': name,
@@ -40,6 +59,7 @@ class Task {
     'progress': progress
   };
 
+  /// Create copy of `Task` instance with new parameters
   Task copyWith({
     int? id,
     String? name,

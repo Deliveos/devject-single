@@ -4,7 +4,7 @@ import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/pages/main_page.dart';
 import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
 import 'package:devject_single/widgets/button.dart';
@@ -193,7 +193,7 @@ class _EditProjectPageState extends State<EditProjectPage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30, 
                                 vertical: 5
-                              ),
+                              )
                             )
                           ]
                         )
@@ -271,9 +271,9 @@ class _EditProjectPageState extends State<EditProjectPage> {
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.red)
                 ),
                 TextSpan(
-                  text: AppLocalizations.of(context)!.toDeleteThisProject,
+                  text: " " + AppLocalizations.of(context)!.toDeleteThisProject,
                   style: Theme.of(context).textTheme.bodyText1
-                ),
+                )
               ]
             )
           ),
@@ -284,37 +284,36 @@ class _EditProjectPageState extends State<EditProjectPage> {
             height: ScreenSize.height(context, 3),
           ),
           InkWell(
-          borderRadius: BorderRadius.circular(30),
-          onTap: () async {
-            if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
-              await ProjectsProvider.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
-              await BlocProvider.of<ProjectsCubit>(context).load();
-              Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
-            }
-          },
-          child: Container(
-            height: 50,
-            // padding: Ed,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-              color: Colors.transparent,
-              border: Border(
-                top: BorderSide(color: Colors.red, width: 1),
-                left: BorderSide(color: Colors.red, width: 1),
-                right: BorderSide(color: Colors.red, width: 1),
-                bottom: BorderSide(color: Colors.red, width: 1)
-              )
-            ),
-            child: Center(
-              child: Text(
-                AppLocalizations.of(context)!.delete.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.red),
-              )
-            ),
-          )
-        ),
+            borderRadius: BorderRadius.circular(30),
+            onTap: () async {
+              if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
+                await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
+                await BlocProvider.of<ProjectsCubit>(context).load();
+                Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
+              }
+            },
+            child: Container(
+              height: 50,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                color: Colors.transparent,
+                border: Border(
+                  top: BorderSide(color: Colors.red, width: 1),
+                  left: BorderSide(color: Colors.red, width: 1),
+                  right: BorderSide(color: Colors.red, width: 1),
+                  bottom: BorderSide(color: Colors.red, width: 1)
+                )
+              ),
+              child: Center(
+                child: Text(
+                  AppLocalizations.of(context)!.delete.toUpperCase(),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.red),
+                )
+              ),
+            )
+          ),
         ]
-      ),
+      )
     );
   }
 }

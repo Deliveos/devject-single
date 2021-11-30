@@ -52,5 +52,14 @@ class DatabaseProvider {
         FOREIGN KEY(start_when_finished_id) REFERENCES tasks(id)
       );
     ''');
+    await database.execute('''
+      CREATE TABLE settings (
+        is_checkbox INTEGER NOT NULL
+      );
+    ''');
+    await database.execute('''
+      INSERT INTO settings(is_checkbox)
+      VALUES(0);
+    ''');
   }
 }

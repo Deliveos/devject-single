@@ -6,12 +6,14 @@ import 'package:devject_single/providers/tasks_provider.dart';
 class TasksCubit extends Cubit<List<Task>> {
   TasksCubit() : super([]);
 
+  final TasksProvider _provider = TasksProvider.instance;
+
   Future load(int projectId, {int? parentId}) async {
-    emit(await TaskProvider.get(projectId, parentId: parentId));
+    emit(await _provider.getFor(projectId, parentId: parentId));
   }
 
   Future add(Task task) async {
-    await TaskProvider.add(task);
+    await _provider.add(task);
     await load(
       task.projectId,
       parentId: task.parentId
@@ -19,7 +21,7 @@ class TasksCubit extends Cubit<List<Task>> {
   }
 
   Future update(Task task) async {
-    await TaskProvider.update(task);
+    await _provider.update(task);
     await load(task.projectId, parentId: task.parentId);
   }
 }

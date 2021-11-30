@@ -1,9 +1,15 @@
 class Project {
+  /// Unique index for every project
   final int? id;
+  /// Project name
   final String name;
+  /// Can be used to supplement information about project
   final String? description;
+  /// Start date of project development
   final DateTime? startDate;
+  /// End date of project development
   final DateTime? endDate;
+  /// Project development progress as a percentage
   final int progress;
 
   Project({
@@ -14,6 +20,18 @@ class Project {
     this.endDate, 
     this.progress = 0});
 
+  /// Create `Project` instance from `Map<String, dynamic>`.
+  /// Map example:
+  /// ```
+  /// {
+  ///   "id": 1,  
+  ///   "name": "Example",
+  ///   "description": "Example project",
+  ///   "start_date": null,
+  ///   "end_date": null,
+  ///   "progress": 100
+  /// }
+  /// ```
   Project.fromMap(Map<String, dynamic> map):
   id = map['id'],
   name = map['name'], 
@@ -22,6 +40,7 @@ class Project {
   endDate = map['end_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['end_date']) : null,
   progress = map['progress'];
 
+  /// Convert `Project` instance to `Map<String, dynamic>`
   Map<String, dynamic> toMap() => <String, dynamic>{
     "id": id,
     "name": name,
@@ -31,6 +50,7 @@ class Project {
     "progress": progress
   };
 
+  /// Create copy of `Project` instance with new parameters
   Project copyWith({
     int? id,
     String? name,

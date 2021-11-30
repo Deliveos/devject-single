@@ -46,5 +46,6 @@
   "delete": "Delete",
   "enter": "Enter",
   "toDeleteThisProject": "To delete this project",
-  "toDeleteThisTask": "To delete this task"
+  "toDeleteThisTask": "To delete this task",
+  "useCheckboxToMarkProgress": "Use checkbox \nto mark progress"
 }

@@ -6,7 +6,7 @@ import 'package:devject_single/models/project.dart';
 import 'package:devject_single/models/task.dart';
 import 'package:devject_single/pages/add_task_page.dart';
 import 'package:devject_single/pages/edit_project_page.dart';
-import 'package:devject_single/utils/size.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
 import 'package:devject_single/widgets/task_container.dart';

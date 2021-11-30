@@ -1,4 +1,5 @@
 import 'package:devject_single/cubit/projects_cubit.dart';
+import 'package:devject_single/cubit/settings_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
@@ -20,8 +21,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<SettingsCubit>(context).load();
     return BlocBuilder<ProjectsCubit, List<Project>>(
       builder: (context, projects) {
         return RefreshIndicator(
@@ -59,11 +62,14 @@ class _MainPageState extends State<MainPage> {
                     )
                   )
                   : Expanded(
-                    flex: 4,
-                    child: Text(
-                      AppLocalizations.of(context)!.noProjects,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    )
+                    child: SizedBox(
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noProjects,
+                          style: Theme.of(context).textTheme.bodyText1,
+                        )
+                      ),
+                    ),
                   )
                 ]
               ) 
@@ -76,11 +82,11 @@ class _MainPageState extends State<MainPage> {
               ),
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProjectPage()));
-              },
-            ),
-          ),
+              }
+            )
+          )
         );
-      },
+      }
     );
   }
 }

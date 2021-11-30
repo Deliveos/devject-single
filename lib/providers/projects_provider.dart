@@ -1,11 +1,17 @@
 import 'package:devject_single/models/project.dart';
+import 'package:devject_single/providers/i_provider.dart';
 import 'package:devject_single/providers/tasks_provider.dart';
 import 'package:devject_single/services/database.dart';
 
-class ProjectsProvider {
-  static final _provider = DatabaseProvider.instance;
+/// Providing database operations for projects
+class ProjectsProvider implements IProvider<Project> {
+  ProjectsProvider._privateConstructor();
 
-  static Future<int> add(Project project) async {
+  static final ProjectsProvider instance = ProjectsProvider._privateConstructor();
+  static final DatabaseProvider _provider = DatabaseProvider.instance;
+
+  @override
+  Future<int> add(Project project) async {
     final db = await _provider.database;
     return await db.rawInsert(
       '''
@@ -21,14 +27,16 @@ class ProjectsProvider {
     );
   }
 
-  static Future<List<Project>> get() async {
+  @override
+  Future<List<Project>> get() async {
     final db = await _provider.database;
     return (await db.rawQuery('''
       SELECT * FROM projects ORDER BY name
     ''')).map((map) => Project.fromMap(map)).toList();
   }
 
-  static Future<Project> getOne(int id) async {
+  @override
+  Future<Project> getOne(int id) async {
     final db = await _provider.database;
     final map = await db.rawQuery('''
       SELECT * FROM projects
@@ -37,7 +45,25 @@ class ProjectsProvider {
     return Project.fromMap(map.first);
   }
 
-  static Future<int> update(Project project) async {
+  @override
+  Future<int> remove(int id) async {
+    final db = await _provider.database;
+    await db.rawDelete(
+      '''
+      DELETE FROM tasks WHERE project_id=?
+      ''', 
+      [id]
+    );
+    return db.rawDelete(
+      '''
+      DELETE FROM projects WHERE id=?
+      ''',
+      [id]
+    );
+  }
+
+  @override
+  Future<int> update(Project project) async {
     final db = await _provider.database;
     return await db.rawUpdate(
       '''
@@ -55,26 +81,8 @@ class ProjectsProvider {
       ]
     );
   }
-
   
-
-  static Future<int> remove(int id) async {
-    final db = await _provider.database;
-    await db.rawDelete(
-      '''
-      DELETE FROM tasks WHERE project_id=?
-      ''', 
-      [id]
-    );
-    return db.rawDelete(
-      '''
-      DELETE FROM projects WHERE id=?
-      ''',
-      [id]
-    );
-  }
-
-  static Future<int> updateProgress(int id, int progress) async {
+  Future<int> updateProgress(int id, int progress) async {
     final db = await _provider.database;
     return await db.rawUpdate('''
       UPDATE projects
@@ -84,8 +92,8 @@ class ProjectsProvider {
     [ progress, id ]);
   }
 
-  static Future recalculateProgressFor(int id) async {
-    final tasks = await TaskProvider.get(id);
+  Future recalculateProgressFor(int id) async {
+    final tasks = await TasksProvider.instance.getFor(id);
     int averageProgress = 0;
     for (var task in tasks) {
       averageProgress += task.progress;
@@ -93,5 +101,4 @@ class ProjectsProvider {
     averageProgress ~/= tasks.length;
     await updateProgress(id, averageProgress);
   }
-
 }

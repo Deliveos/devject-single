@@ -46,5 +46,6 @@
   "delete": "Удалить",
   "enter": "Введите",
   "toDeleteThisProject": "чтобы удалить этот проект",
-  "toDeleteThisTask": "чтобы удалить эту задачу"
+  "toDeleteThisTask": "чтобы удалить эту задачу",
+  "useCheckboxToMarkProgress": "Использовать галочки \nдля пометки прогресса"
 }

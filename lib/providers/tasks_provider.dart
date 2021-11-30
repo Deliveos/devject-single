@@ -1,11 +1,17 @@
 import 'package:devject_single/models/task.dart';
+import 'package:devject_single/providers/i_provider.dart';
 import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/services/database.dart';
 
-class TaskProvider {
-  static final _provider = DatabaseProvider.instance;
+/// Providing database operations for tasks
+class TasksProvider implements IProvider<Task> {
+  TasksProvider._privateConstructor();
 
-  static Future<int> add(Task task) async {
+  static final TasksProvider instance = TasksProvider._privateConstructor();
+  static final DatabaseProvider _provider = DatabaseProvider.instance;
+
+  @override
+  Future<int> add(Task task) async {
     final db = await _provider.database;
     return await db.rawInsert(
       '''
@@ -23,7 +29,17 @@ class TaskProvider {
     );
   }
 
-  static Future<List<Task>> get(int projectId, {int? parentId}) async {
+  @override
+  Future<List<Task>> get() async {
+    final db = await _provider.database;
+    return (await db.rawQuery(
+      '''
+      SELECT * FROM tasks
+      '''
+    )).map((map) => Task.fromMap(map)).toList();
+  }
+  
+  Future<List<Task>> getFor(int projectId, {int? parentId}) async {
     final db = await _provider.database;
     if (parentId != null) {
       return (await db.rawQuery('''
@@ -33,10 +49,37 @@ class TaskProvider {
     final res = (await db.rawQuery('''
         SELECT * FROM tasks WHERE project_id=? AND parent_id IS NULL
       ''', [projectId])).map((map) => Task.fromMap(map)).toList();
-      return res;
+    return res;
   }
 
-  static Future<int> update(Task task) async {
+  @override
+  Future<Task> getOne(int id) async {
+    final db = await _provider.database;
+    final map = await db.rawQuery('''
+        SELECT * FROM tasks WHERE id=?
+      ''', [id]);
+    return Task.fromMap(map.first);
+  }
+
+  @override
+  Future<int> remove(int id) async {
+    final db = await _provider.database;
+    await db.rawDelete(
+      '''
+      DELETE FROM tasks WHERE parent_id=?
+      ''',
+      [id]
+    );
+    return await db.rawDelete(
+      '''
+      DELETE FROM tasks WHERE id=?
+      ''',
+      [id]
+    );
+  }
+
+  @override
+  Future<int> update(Task task) async {
     final db = await _provider.database;
     return await db.rawUpdate('''
       UPDATE tasks
@@ -52,7 +95,7 @@ class TaskProvider {
     ]);
   }
 
-  static Future<int> updateProgress(int id, int progress) async {
+  Future<int> updateProgress(int id, int progress) async {
     final db = await _provider.database;
     return await db.rawUpdate('''
       UPDATE tasks
@@ -62,8 +105,8 @@ class TaskProvider {
     [ progress, id ]);
   }
 
-  static Future recalculateProgressFor(Task task) async {
-    final tasks = await get(
+  Future recalculateProgressFor(Task task) async {
+    final tasks = await getFor(
       task.projectId, parentId: task.id
     );
     int averageProgress = 0;
@@ -75,38 +118,17 @@ class TaskProvider {
     if (task.parentId != null) {
       await recalculateProgressFor(await getOne(task.parentId!));
     } else {
-      await ProjectsProvider.recalculateProgressFor(task.projectId);
+      await ProjectsProvider.instance.recalculateProgressFor(task.projectId);
     }
   }
 
-  static Future<Task> getOne(int id) async {
+  Future<Task?> getParent(Task task) async {
     final db = await _provider.database;
-    final map = await db.rawQuery('''
-        SELECT * FROM tasks WHERE id=?
-      ''', [id]);
-    return Task.fromMap(map.first);
-  }
-
-  static Future<Task?> getParent(Task task) async {
-    final db = await _provider.database;
-    return Task.fromMap((await db.rawQuery('''
-        SELECT * FROM tasks WHERE parent_id=?
-      ''', [task.parentId]))[0]);
-  }
-
-  static Future<int> remove(int id) async {
-    final db = await _provider.database;
-    await db.rawDelete(
+    return Task.fromMap((await db.rawQuery(
       '''
-      DELETE FROM tasks WHERE parent_id=?
+      SELECT * FROM tasks WHERE parent_id=?
       ''',
-      [id]
-    );
-    return await db.rawDelete(
-      '''
-      DELETE FROM tasks WHERE id=?
-      ''',
-      [id]
+      [task.parentId]))[0]
     );
   }
 }
