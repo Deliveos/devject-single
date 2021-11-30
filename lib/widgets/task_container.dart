@@ -28,6 +28,9 @@ class TaskContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          /*
+          * TASK NAME
+          */
           RichText(
             text: TextSpan(
               text:  task.name,

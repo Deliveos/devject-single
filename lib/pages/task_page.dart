@@ -106,100 +106,102 @@ class TaskPage extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        if (settingsState != null && settingsState.useCheckBox)
-                                          Checkbox(
-                                            activeColor: Theme.of(context).primaryColor,
-                                            shape: CircleBorder(
-                                              side: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!)
-                                            ),
-                                            value: activeTask.progress == 100, 
-                                            onChanged: (bool? value) async {
-                                              final TasksProvider _tasksProvider = TasksProvider.instance;
-                                              if (value != null && value) {
+                                        if (tasks.isEmpty) 
+                                          if (settingsState != null && settingsState.useCheckBox)
+                                            Checkbox(
+                                              activeColor: Theme.of(context).primaryColor,
+                                              shape: CircleBorder(
+                                                side: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!)
+                                              ),
+                                              value: activeTask.progress == 100, 
+                                              onChanged: (bool? value) async {
+                                                final TasksProvider _tasksProvider = TasksProvider.instance;
+                                                if (value != null && value) {
+                                                  final withProgress = activeTask.copyWith(
+                                                  progress: 100
+                                                  );
+                                                  BlocProvider.of<SelectedTaskCubit>(context)
+                                                  .select(withProgress);
+                                                  await _tasksProvider.updateProgress(
+                                                    activeTask.id!, 
+                                                    100
+                                                  );
+                                                }
+                                                else {
+                                                  final withProgress = activeTask.copyWith(
+                                                  progress: 0
+                                                  );
+                                                  BlocProvider.of<SelectedTaskCubit>(context)
+                                                  .select(withProgress);
+                                                  await _tasksProvider.updateProgress(
+                                                    activeTask.id!, 
+                                                    0
+                                                  );
+                                                }
+                                                if (activeTask.parentId != null) {
+                                                  await _tasksProvider.recalculateProgressFor(
+                                                    await _tasksProvider.getOne(activeTask.parentId!)
+                                                  );
+                                                } else {
+                                                  await ProjectsProvider.instance.recalculateProgressFor(
+                                                    activeTask.projectId
+                                                  );
+                                                }
+                                                final project = await ProjectsProvider.instance.getOne(activeTask.projectId);
+                                                BlocProvider.of<SelectedProjectCubit>(context).select(project);
+                                                await BlocProvider.of<ProjectsCubit>(context).load();
+                                              }
+                                            )
+                                          else 
+                                            Slider(
+                                              onChangeEnd: (double value) async {
+                                                final TasksProvider _tasksProvider = TasksProvider.instance;
+                                                await _tasksProvider.updateProgress(
+                                                  activeTask.id!, 
+                                                  (value* 100).toInt()
+                                                );
+                                                if (activeTask.parentId != null) {
+                                                  await _tasksProvider.recalculateProgressFor(
+                                                    await _tasksProvider.getOne(activeTask.parentId!)
+                                                  );
+                                                } else {
+                                                  await ProjectsProvider.instance.recalculateProgressFor(
+                                                    activeTask.projectId
+                                                  );
+                                                }
+                                                final project = await ProjectsProvider.instance.getOne(activeTask.projectId);
+                                                BlocProvider.of<SelectedProjectCubit>(context).select(project);
+                                                await BlocProvider.of<ProjectsCubit>(context).load();
+                                              },
+                                              onChanged: (double value) async {
                                                 final withProgress = activeTask.copyWith(
-                                                progress: 100
+                                                  progress: (value* 100).toInt()
                                                 );
                                                 BlocProvider.of<SelectedTaskCubit>(context)
                                                 .select(withProgress);
-                                                await _tasksProvider.updateProgress(
-                                                  activeTask.id!, 
-                                                  100
-                                                );
-                                              }
-                                              else {
-                                                final withProgress = activeTask.copyWith(
-                                                progress: 0
-                                                );
-                                                BlocProvider.of<SelectedTaskCubit>(context)
-                                                .select(withProgress);
-                                                await _tasksProvider.updateProgress(
-                                                  activeTask.id!, 
-                                                  0
-                                                );
-                                              }
-                                              if (activeTask.parentId != null) {
-                                                await _tasksProvider.recalculateProgressFor(
-                                                  await _tasksProvider.getOne(activeTask.parentId!)
-                                                );
-                                              } else {
-                                                await ProjectsProvider.instance.recalculateProgressFor(
-                                                  activeTask.projectId
-                                                );
-                                              }
-                                              final project = await ProjectsProvider.instance.getOne(activeTask.projectId);
-                                              BlocProvider.of<SelectedProjectCubit>(context).select(project);
-                                              await BlocProvider.of<ProjectsCubit>(context).load();
-                                            }
-                                          )
-                                        else if (tasks.isEmpty) 
-                                          Slider(
-                                            onChangeEnd: (double value) async {
-                                              final TasksProvider _tasksProvider = TasksProvider.instance;
-                                              await _tasksProvider.updateProgress(
-                                                activeTask.id!, 
-                                                (value* 100).toInt()
-                                              );
-                                              if (activeTask.parentId != null) {
-                                                await _tasksProvider.recalculateProgressFor(
-                                                  await _tasksProvider.getOne(activeTask.parentId!)
-                                                );
-                                              } else {
-                                                await ProjectsProvider.instance.recalculateProgressFor(
-                                                  activeTask.projectId
-                                                );
-                                              }
-                                              final project = await ProjectsProvider.instance.getOne(activeTask.projectId);
-                                              BlocProvider.of<SelectedProjectCubit>(context).select(project);
-                                              await BlocProvider.of<ProjectsCubit>(context).load();
-                                            },
-                                            onChanged: (double value) async {
-                                              final withProgress = activeTask.copyWith(
-                                                progress: (value* 100).toInt()
-                                              );
-                                              BlocProvider.of<SelectedTaskCubit>(context)
-                                              .select(withProgress);
-                                            },
-                                            value: activeTask.progress / 100,
-                                          )
+                                              },
+                                              value: activeTask.progress / 100,
+                                            )
                                         else
-                                          Expanded(
-                                            flex: 1,
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(25),
-                                              child: LinearProgressIndicator(
-                                                minHeight: 10,
-                                                value: activeTask.progress.toDouble() / 100,
-                                                backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
-                                                valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+                                          ...[
+                                            Expanded(
+                                              flex: 1,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(25),
+                                                child: LinearProgressIndicator(
+                                                  minHeight: 10,
+                                                  value: activeTask.progress.toDouble() / 100,
+                                                  backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
+                                                  valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        SizedBox(width: ScreenSize.width(context, 2)),
-                                        if (settingsState == null || settingsState.useCheckBox == false)
-                                          Text(
-                                            activeTask.progress.toString() + "%",
-                                            style: Theme.of(context).textTheme.bodyText1
-                                          )
+                                            SizedBox(width: ScreenSize.width(context, 2)),
+                                            Text(
+                                              activeTask.progress.toString() + "%",
+                                              style: Theme.of(context).textTheme.bodyText1
+                                            )
+                                          ]
                                       ],
                                     ),
                                   )

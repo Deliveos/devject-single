@@ -3,6 +3,7 @@ import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/pages/project_page.dart';
+import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/backdrop_filter_container.dart';
 import 'package:expandable/expandable.dart';
@@ -28,6 +29,9 @@ class ProjectContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          /*
+          * PROJECT NAME
+          */
           RichText(
             text: TextSpan(
               text:  project.name,
@@ -35,7 +39,9 @@ class ProjectContainer extends StatelessWidget {
                 fontWeight: FontWeight.bold
               ),
               recognizer: TapGestureRecognizer()..onTap = () async {
-                BlocProvider.of<SelectedProjectCubit>(context).select(project);
+                BlocProvider.of<SelectedProjectCubit>(context).select(
+                  await ProjectsProvider.instance.getOne(project.id!)
+                );
                 await BlocProvider.of<TasksCubit>(context).load(project.id!);
                 Navigator.push(
                   context, 

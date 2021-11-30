@@ -4,6 +4,7 @@ import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/pages/main_page.dart';
 import 'package:devject_single/providers/projects_provider.dart';
+import 'package:devject_single/utils/pick_date_range.dart';
 import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
@@ -142,7 +143,7 @@ class _EditProjectPageState extends State<EditProjectPage> {
                                   hintText: AppLocalizations.of(context)!
                                       .startDate,
                                   onTap: () async {
-                                    await pickDateRange(context);
+                                    await pickDateRangeForProject(context);
                                   }
                                 ),
                                 Text(
@@ -158,7 +159,7 @@ class _EditProjectPageState extends State<EditProjectPage> {
                                   hintText: AppLocalizations.of(context)!
                                   .endDate,
                                   onTap: () async {
-                                    await pickDateRange(context);
+                                    await pickDateRangeForProject(context);
                                   }
                                 ),
                               ]
@@ -210,46 +211,32 @@ class _EditProjectPageState extends State<EditProjectPage> {
     );
   }
 
-  Future pickDateRange(BuildContext context) async {
-    final initialDateRange = DateTimeRange(
-        start: dateTimeRange?.start ?? DateTime.now(),
-        end: dateTimeRange?.end ??
-            DateTime.now().add(const Duration(hours: 24 * 3)));
-    final newDateRange = await showDateRangePicker(
-      cancelText: AppLocalizations.of(context)!.done,
-      builder: (context, Widget? child) => Theme(
-        data: Theme.of(context).copyWith(
-          appBarTheme: Theme.of(context).appBarTheme.copyWith(
-            backgroundColor: Theme.of(context).backgroundColor,
-            iconTheme: Theme.of(context)
-            .appBarTheme
-            .iconTheme!
-            .copyWith(color: Colors.white)
-          ),
-        ),
-        child: child!,
-      ),
-      initialDateRange: dateTimeRange ?? initialDateRange,
-      context: context,
+  Future pickDateRangeForProject(BuildContext context) async {
+    await pickDateRange(
+      context,
       firstDate: DateTime(DateTime.now().year - 10),
-      lastDate: DateTime(DateTime.now().year + 10)
+      lastDate: DateTime(DateTime.now().year + 10),
+      callback: (DateTimeRange? dateRange) {
+        if (dateRange == null) return;
+        setState(() {
+          dateTimeRange = dateRange;
+          _startDateController.text = dateFormat.format(dateTimeRange!.start);
+          _endDateController.text = dateFormat.format(dateTimeRange!.end);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              dateFormat.format(dateTimeRange!.start) +
+              " - " +
+              dateFormat.format(dateTimeRange!.end),
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            backgroundColor: Theme.of(context).backgroundColor,
+            duration: const Duration(milliseconds: 2000)
+          )
+        );
+      }
     );
-    if (newDateRange == null) return;
-    setState(() {
-      dateTimeRange = newDateRange;
-      _startDateController.text = dateFormat.format(dateTimeRange!.start);
-      _endDateController.text = dateFormat.format(dateTimeRange!.end);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        dateFormat.format(dateTimeRange!.start) +
-            " - " +
-            dateFormat.format(dateTimeRange!.end),
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      duration: const Duration(milliseconds: 2000)
-    ));
   }
 
   Widget showDeleteProjectDialog(BuildContext context) {

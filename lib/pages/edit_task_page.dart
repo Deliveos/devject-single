@@ -5,6 +5,7 @@ import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/task.dart';
 import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/providers/tasks_provider.dart';
+import 'package:devject_single/utils/pick_date_range.dart';
 import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/background.dart';
@@ -146,7 +147,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                       hintText: AppLocalizations.of(context)!
                                           .startDate,
                                       onTap: () async {
-                                        await pickDateRange(context);
+                                        await pickDateRangeForTask(context);
                                       }),
                                   Text("-",
                                       style: Theme.of(context)
@@ -159,7 +160,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                     hintText: AppLocalizations.of(context)!
                                         .endDate,
                                     onTap: () async {
-                                      await pickDateRange(context);
+                                      await pickDateRangeForTask(context);
                                     }
                                   ),
                                 ]),
@@ -178,11 +179,17 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                     description: _descriptionController.text.trim().isNotEmpty
                                     ? _descriptionController.text.trim()
                                     : null,
+                                    startDate: dateTimeRange?.start,
+                                    endDate: dateTimeRange?.end,
                                     projectId: widget.task.projectId,
                                     parentId: widget.task.parentId
                                   );
                                   await BlocProvider.of<TasksCubit>(context).update(task);
                                   BlocProvider.of<SelectedTaskCubit>(context).select(task);
+                                  await BlocProvider.of<TasksCubit>(context).load(
+                                    BlocProvider.of<SelectedProjectCubit>(context).state!.id!,
+                                    parentId: BlocProvider.of<SelectedTaskCubit>(context).state!.id
+                                  );
                                   Navigator.pop(context);
                                 }
                               },
@@ -212,43 +219,79 @@ class _EditTaskPageState extends State<EditTaskPage> {
     );
   }
 
-  Future pickDateRange(BuildContext context) async {
-    final newDateRange = await showDateRangePicker(
-        cancelText: AppLocalizations.of(context)!.done,
-        builder: (context, Widget? child) => Theme(
-          data: Theme.of(context).copyWith(
-            appBarTheme: Theme.of(context).appBarTheme.copyWith(
-              backgroundColor: Theme.of(context).backgroundColor,
-              iconTheme: Theme.of(context)
-              .appBarTheme
-              .iconTheme!
-              .copyWith(color: Colors.white)
+  Future pickDateRangeForTask(BuildContext context) async {
+    Task? parent;
+    if (BlocProvider.of<SelectedTaskCubit>(context).state!.parentId != null) {
+      parent = await TasksProvider.instance.getOne(
+        BlocProvider.of<SelectedTaskCubit>(context).state!.parentId!
+      );
+    }
+    await pickDateRange(
+      context,
+      firstDate: parent?.startDate ?? 
+        BlocProvider.of<SelectedProjectCubit>(context).state!.startDate!,
+      lastDate: parent?.endDate ?? 
+        BlocProvider.of<SelectedProjectCubit>(context).state!.endDate!,
+      callback: (DateTimeRange? dateRange) {
+        if (dateRange == null) return;
+        setState(() {
+          dateTimeRange = dateRange;
+          _startDateController.text = dateFormat.format(dateTimeRange!.start);
+          _endDateController.text = dateFormat.format(dateTimeRange!.end);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              dateFormat.format(dateTimeRange!.start) +
+              " - " +
+              dateFormat.format(dateTimeRange!.end),
+              style: Theme.of(context).textTheme.bodyText1,
             ),
-          ),
-          child: child!,
-        ),
-        context: context,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(DateTime.now().year + 10));
-    if (newDateRange == null) return;
-    setState(() {
-      dateTimeRange = newDateRange;
-      _startDateController.text = dateFormat.format(dateTimeRange!.start);
-      _endDateController.text = dateFormat.format(dateTimeRange!.end);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          dateFormat.format(dateTimeRange!.start) +
-          " - " +
-          dateFormat.format(dateTimeRange!.end),
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-        backgroundColor: Theme.of(context).backgroundColor,
-        duration: const Duration(milliseconds: 2000)
-      )
+            backgroundColor: Theme.of(context).backgroundColor,
+            duration: const Duration(milliseconds: 2000)
+          )
+        );
+      }
     );
   }
+
+  // Future pickDateRange(BuildContext context) async {
+  //   final newDateRange = await showDateRangePicker(
+  //       cancelText: AppLocalizations.of(context)!.done,
+  //       builder: (context, Widget? child) => Theme(
+  //         data: Theme.of(context).copyWith(
+  //           appBarTheme: Theme.of(context).appBarTheme.copyWith(
+  //             backgroundColor: Theme.of(context).backgroundColor,
+  //             iconTheme: Theme.of(context)
+  //             .appBarTheme
+  //             .iconTheme!
+  //             .copyWith(color: Colors.white)
+  //           ),
+  //         ),
+  //         child: child!,
+  //       ),
+  //       context: context,
+  //       firstDate: DateTime.now(),
+  //       lastDate: DateTime(DateTime.now().year + 10));
+  //   if (newDateRange == null) return;
+  //   setState(() {
+  //     dateTimeRange = newDateRange;
+  //     _startDateController.text = dateFormat.format(dateTimeRange!.start);
+  //     _endDateController.text = dateFormat.format(dateTimeRange!.end);
+  //   });
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(
+  //         dateFormat.format(dateTimeRange!.start) +
+  //         " - " +
+  //         dateFormat.format(dateTimeRange!.end),
+  //         style: Theme.of(context).textTheme.bodyText1,
+  //       ),
+  //       backgroundColor: Theme.of(context).backgroundColor,
+  //       duration: const Duration(milliseconds: 2000)
+  //     )
+  //   );
+  // }
 
     Widget showDeleteTaskDialog(BuildContext context) {
     final InputTextEditingController _controller = InputTextEditingController();
