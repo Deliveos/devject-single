@@ -65,5 +65,4 @@ class SettingProvider implements IProvider<Settings> {
       ]
     );
   }
-  
 }

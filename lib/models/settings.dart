@@ -6,10 +6,10 @@ class Settings {
   final bool useCheckBox;
 
   Settings.fromMap(Map<String, dynamic> map): 
-  useCheckBox = map['use_checkbox'] == 0 ? false : true;
+  useCheckBox = map['is_checkbox'] != 0 ? true : false;
   
   Map<String, dynamic> toMap() => {
-    'use_checkbox': useCheckBox
+    'is_checkbox': useCheckBox
   };
 
   Settings copyWith({
