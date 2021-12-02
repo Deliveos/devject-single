@@ -54,12 +54,14 @@ class DatabaseProvider {
     ''');
     await database.execute('''
       CREATE TABLE settings (
-        is_checkbox INTEGER NOT NULL
+        locale VARCHAR(4)
+        is_checkbox INTEGER NOT NULL,
+        is_dark_theme INTEGER NOT NULL
       );
     ''');
     await database.execute('''
-      INSERT INTO settings(is_checkbox)
-      VALUES(0);
+      INSERT INTO settings(is_checkbox, is_dark_theme)
+      VALUES(0, 1);
     ''');
   }
 }

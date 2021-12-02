@@ -47,5 +47,7 @@
   "enter": "Введите",
   "toDeleteThisProject": "чтобы удалить этот проект",
   "toDeleteThisTask": "чтобы удалить эту задачу",
-  "useCheckboxToMarkProgress": "Использовать галочки \nдля пометки прогресса"
+  "useCheckboxToMarkProgress": "Использовать галочки \nдля пометки прогресса",
+  "darkTheme": "Темная тема",
+  "projects": "Проекты"
 }

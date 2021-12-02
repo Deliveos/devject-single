@@ -1,3 +1,4 @@
+import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/settings_cubit.dart';
 import 'package:devject_single/models/project.dart';
@@ -35,6 +36,10 @@ class _MainPageState extends State<MainPage> {
             extendBodyBehindAppBar: true,
             appBar: buildAppBar(
               context,
+              title: Text(
+                AppLocalizations.of(context)!.projects,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
               actions: [
                 IconButton(
                   onPressed: () => Navigator.push(
@@ -75,10 +80,10 @@ class _MainPageState extends State<MainPage> {
               ) 
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(
+              child: const Icon(
                 Icons.add, 
                 size: 30, 
-                color: Theme.of(context).textTheme.bodyText1!.color
+                color: kButtonTextColor
               ),
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProjectPage()));

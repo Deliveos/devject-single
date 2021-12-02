@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/selected_task_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
@@ -195,7 +196,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.create.toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyText1
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                  color: kButtonTextColor
+                                )
                               ),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30, 

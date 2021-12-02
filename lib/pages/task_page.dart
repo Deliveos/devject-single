@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/constants/sizes.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
@@ -32,7 +33,7 @@ class TaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
-    return BlocBuilder<SettingsCubit, Settings?>(
+    return BlocBuilder<SettingsCubit, Settings>(
       builder: (context, settingsState) {
         return BlocBuilder<SelectedTaskCubit, Task?>(
           builder: (context, activeTask) {
@@ -107,7 +108,7 @@ class TaskPage extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         if (tasks.isEmpty) 
-                                          if (settingsState != null && settingsState.useCheckBox)
+                                          if (settingsState.useCheckBox)
                                             Checkbox(
                                               activeColor: Theme.of(context).primaryColor,
                                               shape: CircleBorder(
@@ -152,56 +153,43 @@ class TaskPage extends StatelessWidget {
                                                 await BlocProvider.of<ProjectsCubit>(context).load();
                                               }
                                             )
-                                          else 
-                                            Slider(
-                                              onChangeEnd: (double value) async {
-                                                final TasksProvider _tasksProvider = TasksProvider.instance;
-                                                await _tasksProvider.updateProgress(
-                                                  activeTask.id!, 
-                                                  (value* 100).toInt()
-                                                );
-                                                if (activeTask.parentId != null) {
-                                                  await _tasksProvider.recalculateProgressFor(
-                                                    await _tasksProvider.getOne(activeTask.parentId!)
+                                          else
+                                            ...[ 
+                                              Slider(
+                                                onChangeEnd: (double value) async {
+                                                  final TasksProvider _tasksProvider = TasksProvider.instance;
+                                                  await _tasksProvider.updateProgress(
+                                                    activeTask.id!, 
+                                                    (value* 100).toInt()
                                                   );
-                                                } else {
-                                                  await ProjectsProvider.instance.recalculateProgressFor(
-                                                    activeTask.projectId
+                                                  if (activeTask.parentId != null) {
+                                                    await _tasksProvider.recalculateProgressFor(
+                                                      await _tasksProvider.getOne(activeTask.parentId!)
+                                                    );
+                                                  } else {
+                                                    await ProjectsProvider.instance.recalculateProgressFor(
+                                                      activeTask.projectId
+                                                    );
+                                                  }
+                                                  final project = await ProjectsProvider.instance.getOne(activeTask.projectId);
+                                                  BlocProvider.of<SelectedProjectCubit>(context).select(project);
+                                                  await BlocProvider.of<ProjectsCubit>(context).load();
+                                                },
+                                                onChanged: (double value) async {
+                                                  final withProgress = activeTask.copyWith(
+                                                    progress: (value* 100).toInt()
                                                   );
-                                                }
-                                                final project = await ProjectsProvider.instance.getOne(activeTask.projectId);
-                                                BlocProvider.of<SelectedProjectCubit>(context).select(project);
-                                                await BlocProvider.of<ProjectsCubit>(context).load();
-                                              },
-                                              onChanged: (double value) async {
-                                                final withProgress = activeTask.copyWith(
-                                                  progress: (value* 100).toInt()
-                                                );
-                                                BlocProvider.of<SelectedTaskCubit>(context)
-                                                .select(withProgress);
-                                              },
-                                              value: activeTask.progress / 100,
-                                            )
-                                        else
-                                          ...[
-                                            Expanded(
-                                              flex: 1,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(25),
-                                                child: LinearProgressIndicator(
-                                                  minHeight: 10,
-                                                  value: activeTask.progress.toDouble() / 100,
-                                                  backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
-                                                  valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
-                                                ),
+                                                  BlocProvider.of<SelectedTaskCubit>(context)
+                                                  .select(withProgress);
+                                                },
+                                                value: activeTask.progress / 100,
                                               ),
-                                            ),
-                                            SizedBox(width: ScreenSize.width(context, 2)),
-                                            Text(
-                                              activeTask.progress.toString() + "%",
-                                              style: Theme.of(context).textTheme.bodyText1
-                                            )
-                                          ]
+                                              SizedBox(width: ScreenSize.width(context, 2)),
+                                              Text(
+                                                activeTask.progress.toString() + "%",
+                                                style: Theme.of(context).textTheme.bodyText1
+                                              )
+                                            ]
                                       ],
                                     ),
                                   )
@@ -311,10 +299,10 @@ class TaskPage extends StatelessWidget {
                       * ADD NEW TASK BUTTON
                       */
                       floatingActionButton: FloatingActionButton(
-                        child: Icon(
+                        child: const Icon(
                           Icons.add, 
                           size: 30, 
-                          color: Theme.of(context).textTheme.bodyText1!.color
+                          color: kButtonTextColor
                         ),
                         onPressed: () {
                           Navigator.push(

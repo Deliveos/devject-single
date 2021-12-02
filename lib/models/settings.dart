@@ -1,25 +1,47 @@
+import 'dart:io';
+
 class Settings {
   Settings({
-    required this.useCheckBox
+    this.locale,
+    this.useCheckBox = false,
+    this.isDarkTheme = true
   }); 
 
+  final String? locale;
   final bool useCheckBox;
+  final bool isDarkTheme;
 
-  Settings.fromMap(Map<String, dynamic> map): 
-  useCheckBox = map['is_checkbox'] != 0 ? true : false;
-  
+  Settings.fromMap(Map<String, dynamic> map):
+  locale = map['locale'],
+  useCheckBox = map['is_checkbox'] != 0 ? true : false,
+  isDarkTheme = map['is_dark_theme'] != 0 ? true : false;
+
+  Settings.byDefault():
+  locale = Platform.localeName,
+  useCheckBox = false,
+  isDarkTheme = true;
+
   Map<String, dynamic> toMap() => {
-    'is_checkbox': useCheckBox
+    'locale': locale,
+    'is_checkbox': useCheckBox,
+    'is_dark_theme': isDarkTheme
   };
 
   Settings copyWith({
-    bool? useCheckBox
+    String? locale,
+    bool? useCheckBox,
+    bool? isDarkTheme
   }) => Settings(
-    useCheckBox: useCheckBox ?? this.useCheckBox
+    locale: locale ?? this.locale,
+    useCheckBox: useCheckBox ?? this.useCheckBox,
+    isDarkTheme: isDarkTheme ?? this.isDarkTheme
   );
 
   @override
   String toString() {
-    return 'Settings { useCheckBox:$useCheckBox }';
+    return 'Settings { '
+    'locale:$locale '
+    'useCheckBox:$useCheckBox, '
+    'isDarkTheme:$isDarkTheme }';
   }
 }

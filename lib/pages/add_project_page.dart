@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/utils/pick_date_range.dart';
@@ -145,7 +146,9 @@ class _AddProjectPageState extends State<AddProjectPage> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.create.toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyText1
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                  color: kButtonTextColor
+                                )
                               ),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30, 

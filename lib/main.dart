@@ -2,11 +2,13 @@ import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/selected_task_cubit.dart';
 import 'package:devject_single/cubit/settings_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
+import 'package:devject_single/models/settings.dart';
 import 'package:devject_single/pages/add_project_page.dart';
 import 'package:devject_single/pages/add_task_page.dart';
 import 'package:devject_single/pages/project_page.dart';
 import 'package:devject_single/pages/settings_page.dart';
 import 'package:devject_single/pages/task_page.dart';
+import 'package:devject_single/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,26 +35,33 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SelectedProjectCubit()),
         BlocProvider(create: (context) => SettingsCubit())
       ],
-      child: MaterialApp(
-        title: 'Devject Single',
-        debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.dark,
-        darkTheme: darkTheme,
-        supportedLocales: L10n.all,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate
-        ],
-        initialRoute: MainPage.routeName,
-        routes: {
-          MainPage.routeName: (context) => const MainPage(),
-          ProjectPage.routeName: (context) => const ProjectPage(),
-          TaskPage.routeName: (context) => const TaskPage(),
-          SettingsPage.routeName: (context) => const SettingsPage(),
-          AddProjectPage.routeName: (context) => const AddProjectPage(),
-          AddTaskPage.routeName: (context) => const AddTaskPage()
+      child: BlocBuilder<SettingsCubit, Settings>(
+        builder: (context, settingsState) {
+          return MaterialApp(
+              title: 'Devject Single',
+              debugShowCheckedModeBanner: false,
+              themeMode: settingsState.isDarkTheme 
+                ? ThemeMode.dark
+                : ThemeMode.light,
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              supportedLocales: L10n.all,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate
+              ],
+              initialRoute: MainPage.routeName,
+              routes: {
+                MainPage.routeName: (context) => const MainPage(),
+                ProjectPage.routeName: (context) => const ProjectPage(),
+                TaskPage.routeName: (context) => const TaskPage(),
+                SettingsPage.routeName: (context) => const SettingsPage(),
+                AddProjectPage.routeName: (context) => const AddProjectPage(),
+                AddTaskPage.routeName: (context) => const AddTaskPage()
+              },
+            );
         },
       ),
     );

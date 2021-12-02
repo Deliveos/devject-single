@@ -16,7 +16,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<SettingsCubit>(context).load();
-    return BlocBuilder<SettingsCubit, Settings?>(
+    return BlocBuilder<SettingsCubit, Settings>(
       builder: (context, settingsState) {
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -39,11 +39,30 @@ class SettingsPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Switch(
-                      value: settingsState?.useCheckBox ?? false, 
+                      value: settingsState.useCheckBox, 
                       onChanged: (value) async {
                         await BlocProvider.of<SettingsCubit>(context).update(
-                          settingsState!.copyWith(
+                          settingsState.copyWith(
                             useCheckBox: value
+                          )
+                        );                          
+                      }
+                    )
+                  ]
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.darkTheme,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    Switch(
+                      value: settingsState.isDarkTheme, 
+                      onChanged: (value) async {
+                        await BlocProvider.of<SettingsCubit>(context).update(
+                          settingsState.copyWith(
+                            isDarkTheme: value
                           )
                         );                          
                       }

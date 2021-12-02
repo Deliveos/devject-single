@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/constants/sizes.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
@@ -17,33 +18,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ProjectPage extends StatefulWidget {
+class ProjectPage extends StatelessWidget {
   const ProjectPage({Key? key}) : super(key: key);
 
-  static const String routeName = "ProjectPage";
-
-  @override
-  _ProjectPageState createState() => _ProjectPageState();
-}
-
-class _ProjectPageState extends State<ProjectPage> {
-  final ScrollController _controller = ScrollController();
-  bool topContainerIsClosed = false;
-  final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
-
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {
-        topContainerIsClosed = _controller.offset > 50;
-      });
-    });
-  }
+  static const routeName = "ProjectPage";
 
   @override
   Widget build(BuildContext context) {
+    final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
     return BlocBuilder<SelectedProjectCubit, Project?>(
       builder: (context, project) {
         return RefreshIndicator(
@@ -82,11 +64,9 @@ class _ProjectPageState extends State<ProjectPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: kAppBarHeight + ScreenSize.height(context, 3),),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
+                  Container(
                     width: MediaQuery.of(context).size.width,
                     alignment: Alignment.topCenter,
-                    height: topContainerIsClosed ? 0 : ScreenSize.height(context, 4),
                     child: FittedBox(
                       alignment: Alignment.topCenter,
                       fit: BoxFit.fill,
@@ -201,7 +181,6 @@ class _ProjectPageState extends State<ProjectPage> {
                         if (tasks.isNotEmpty) {
                           return Expanded(
                             child: ListView.builder(
-                              controller: _controller,
                               itemCount: tasks.length,
                               itemBuilder: (context, index) => TaskContainer(tasks[index])
                             ),
@@ -224,10 +203,10 @@ class _ProjectPageState extends State<ProjectPage> {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(
+              child: const Icon(
                 Icons.add, 
                 size: 30, 
-                color: Theme.of(context).textTheme.bodyText1!.color
+                color: kButtonTextColor
               ),
               onPressed: () {
                 Navigator.push(

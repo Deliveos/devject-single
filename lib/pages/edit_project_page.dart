@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/models/project.dart';
@@ -189,7 +190,9 @@ class _EditProjectPageState extends State<EditProjectPage> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.save.toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyText1
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                  color: kButtonTextColor
+                                )
                               ),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30, 
