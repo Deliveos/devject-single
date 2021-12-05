@@ -1,23 +1,25 @@
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/cubit/tasks_cubit.dart';
-import 'package:devject_single/models/project.dart';
-import 'package:devject_single/models/task.dart';
-import 'package:devject_single/pages/add_task_page.dart';
-import 'package:devject_single/pages/edit_project_page.dart';
-import 'package:devject_single/pages/main_page.dart';
-import 'package:devject_single/widgets/project_info_card.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/input_field.dart';
-import 'package:devject_single/widgets/input_text_editing_controller.dart';
-import 'package:devject_single/widgets/task_container.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../constants/sizes.dart';
+import '../cubit/projects_cubit.dart';
+import '../cubit/selected_project_cubit.dart';
+import '../cubit/tasks_cubit.dart';
+import '../models/project.dart';
+import '../models/task.dart';
+import '../pages/add_task_page.dart';
+import '../pages/edit_project_page.dart';
+import '../pages/projects_page.dart';
+import '../widgets/project_info_card.dart';
+import '../providers/projects_provider.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/input_field.dart';
+import '../widgets/input_text_editing_controller.dart';
+import '../widgets/task_container.dart';
+
 
 class ProjectPage extends StatelessWidget {
   const ProjectPage({Key? key}) : super(key: key);
@@ -155,6 +157,7 @@ class ProjectPage extends StatelessWidget {
     );
   }
 
+    // TODO: Made delete project dialog
     showDeleteProjectDialog(BuildContext context) async {
     final InputTextEditingController _controller = InputTextEditingController();
     return await showDialog(
@@ -194,19 +197,19 @@ class ProjectPage extends StatelessWidget {
               if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
                 await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
                 await BlocProvider.of<ProjectsCubit>(context).load();
-                Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
+                Navigator.of(context).pushNamedAndRemoveUntil(ProjectsPage.routeName, (route) => false);
               }
             },
             child: Container(
               height: 50,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(kCardBorderRadius)
+                ),
                 color: Colors.transparent,
-                border: Border(
-                  top: BorderSide(color: Colors.red, width: 1),
-                  left: BorderSide(color: Colors.red, width: 1),
-                  right: BorderSide(color: Colors.red, width: 1),
-                  bottom: BorderSide(color: Colors.red, width: 1)
+                border: Border.all(
+                  color: Colors.red,
+                  width: 1
                 )
               ),
               child: Center(
@@ -220,46 +223,5 @@ class ProjectPage extends StatelessWidget {
         ],
       )
     );
-    // return Container(
-    //   margin: EdgeInsets.only(
-    //     top: ScreenSize.height(context, 5)
-    //   ),
-    //   padding: EdgeInsets.all(ScreenSize.width(context, 3)),
-    //   child: 
-    //       SizedBox(
-    //         height: ScreenSize.height(context, 3),
-    //       ),
-    //       InkWell(
-    //         borderRadius: BorderRadius.circular(30),
-    //         onTap: () async {
-    //           if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
-    //             await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
-    //             await BlocProvider.of<ProjectsCubit>(context).load();
-    //             Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
-    //           }
-    //         },
-    //         child: Container(
-    //           height: 50,
-    //           decoration: const BoxDecoration(
-    //             borderRadius: BorderRadius.all(Radius.circular(30)),
-    //             color: Colors.transparent,
-    //             border: Border(
-    //               top: BorderSide(color: Colors.red, width: 1),
-    //               left: BorderSide(color: Colors.red, width: 1),
-    //               right: BorderSide(color: Colors.red, width: 1),
-    //               bottom: BorderSide(color: Colors.red, width: 1)
-    //             )
-    //           ),
-    //           child: Center(
-    //             child: Text(
-    //               AppLocalizations.of(context)!.delete.toUpperCase(),
-    //               style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.red),
-    //             )
-    //           ),
-    //         )
-    //       ),
-    //     ]
-    //   )
-    // );
   }
 }

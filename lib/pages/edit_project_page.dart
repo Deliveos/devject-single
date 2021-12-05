@@ -3,7 +3,7 @@ import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/models/project.dart';
-import 'package:devject_single/pages/main_page.dart';
+import 'package:devject_single/pages/projects_page.dart';
 import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/utils/pick_date_range.dart';
 import 'package:devject_single/utils/screen_size.dart';
@@ -276,7 +276,7 @@ class _EditProjectPageState extends State<EditProjectPage> {
               if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
                 await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
                 await BlocProvider.of<ProjectsCubit>(context).load();
-                Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
+                Navigator.of(context).pushNamedAndRemoveUntil(ProjectsPage.routeName, (route) => false);
               }
             },
             child: Container(

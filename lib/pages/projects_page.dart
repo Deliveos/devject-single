@@ -1,27 +1,28 @@
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/settings_cubit.dart';
-import 'package:devject_single/models/project.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/project_container.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../cubit/projects_cubit.dart';
+import '../cubit/settings_cubit.dart';
+import '../models/project.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/main_bottom_nav_bar.dart';
+import '../widgets/project_container.dart';
 import 'add_project_page.dart';
-import 'settings_page.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
 
-  static const String routeName = "/";
+class ProjectsPage extends StatefulWidget {
+  const ProjectsPage({Key? key}) : super(key: key);
+
+  static const String routeName = "ProjectsPage";
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _ProjectsPageState createState() => _ProjectsPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +41,13 @@ class _MainPageState extends State<MainPage> {
               actions: [
                 IconButton(
                   onPressed: () => Navigator.push(
-                    context,
+                    context, 
                     MaterialPageRoute(
-                      builder: (context) => const SettingsPage()
+                      builder: (context) => const AddProjectPage()
                     )
                   ),
-                  icon: Icon(FluentIcons.settings_24_regular,
+                  icon: Icon(
+                    FluentIcons.add_24_filled,
                     color: Theme.of(context).textTheme.bodyText1!.color,
                     size: 20
                   )
@@ -79,16 +81,7 @@ class _MainPageState extends State<MainPage> {
                 ]
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              child: const Icon(
-                Icons.add, 
-                size: 30, 
-                color: kButtonTextColor
-              ),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProjectPage()));
-              }
-            )
+            bottomNavigationBar: const MainBottomNavBar(),
           )
         );
       }

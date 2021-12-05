@@ -1,12 +1,14 @@
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/settings_cubit.dart';
-import 'package:devject_single/models/settings.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../constants/sizes.dart';
+import '../cubit/settings_cubit.dart';
+import '../models/settings.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/main_bottom_nav_bar.dart';
+
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -24,32 +26,31 @@ class SettingsPage extends StatelessWidget {
             context,
             title: AppLocalizations.of(context)!.settings,
           ),
-          body: Background(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: kAppBarHeight + ScreenSize.height(context, 3)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.darkTheme,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    Switch(
-                      value: settingsState.isDarkTheme??  false, 
-                      onChanged: (value) async {
-                        await BlocProvider.of<SettingsCubit>(context).update(
-                          settingsState.copyWith(
-                            isDarkTheme: value
-                          )
-                        );                          
-                      }
-                    )
-                  ]
-                )
-              ]
-            )
-          )
+          body: Column(
+            children: <Widget>[
+              SizedBox(height: kAppBarHeight + ScreenSize.height(context, 3)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.darkTheme,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  Switch(
+                    value: settingsState.isDarkTheme??  false, 
+                    onChanged: (value) async {
+                      await BlocProvider.of<SettingsCubit>(context).update(
+                        settingsState.copyWith(
+                          isDarkTheme: value
+                        )
+                      );                          
+                    }
+                  )
+                ]
+              )
+            ]
+          ),
+          bottomNavigationBar: const MainBottomNavBar(),
         );
       },
     );

@@ -5,6 +5,7 @@ import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/settings.dart';
 import 'package:devject_single/pages/add_project_page.dart';
 import 'package:devject_single/pages/add_task_page.dart';
+import 'package:devject_single/pages/home_page.dart';
 import 'package:devject_single/pages/project_page.dart';
 import 'package:devject_single/pages/settings_page.dart';
 import 'package:devject_single/pages/task_page.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'cubit/projects_cubit.dart';
 import 'l10n/l10n.dart';
-import 'pages/main_page.dart';
+import 'pages/projects_page.dart';
 import 'themes/dark_theme.dart';
 
 void main() {
@@ -54,9 +55,10 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate
             ],
-            initialRoute: MainPage.routeName,
+            initialRoute: HomePage.routeName,
             routes: {
-              MainPage.routeName: (context) => const MainPage(),
+              HomePage.routeName: (context) => const HomePage(),
+              ProjectsPage.routeName: (context) => const ProjectsPage(),
               ProjectPage.routeName: (context) => const ProjectPage(),
               TaskPage.routeName: (context) => const TaskPage(),
               SettingsPage.routeName: (context) => const SettingsPage(),

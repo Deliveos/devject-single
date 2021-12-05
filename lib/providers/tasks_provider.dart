@@ -119,6 +119,17 @@ class TasksProvider implements IProvider<Task> {
         );
       }
     }
+    tasks.sort((a, b) {
+      if (a.startDate != null && b.startDate != null) {
+        return a.startDate!.isBefore(b.startDate!) ? 0 : 1;
+      } else {
+        if (a.startDate == null) {
+          return 0;
+        } else {
+          return 1;
+        }
+      }
+    });
     return tasks;
   }
 

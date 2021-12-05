@@ -1,20 +1,4 @@
 import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/cubit/selected_task_cubit.dart';
-import 'package:devject_single/cubit/settings_cubit.dart';
-import 'package:devject_single/cubit/tasks_cubit.dart';
-import 'package:devject_single/models/settings.dart';
-import 'package:devject_single/models/status.dart';
-import 'package:devject_single/models/task.dart';
-import 'package:devject_single/pages/edit_task_page.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/providers/tasks_provider.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/task_container.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +7,23 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import '../constants/colors.dart';
+import '../constants/sizes.dart';
+import '../cubit/projects_cubit.dart';
+import '../cubit/selected_project_cubit.dart';
+import '../cubit/selected_task_cubit.dart';
+import '../cubit/settings_cubit.dart';
+import '../cubit/tasks_cubit.dart';
+import '../models/settings.dart';
+import '../models/status.dart';
+import '../models/task.dart';
+import '../pages/edit_task_page.dart';
+import '../providers/projects_provider.dart';
+import '../providers/tasks_provider.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/main_bottom_nav_bar.dart';
+import '../widgets/task_container.dart';
 import 'add_task_page.dart';
 
 
@@ -84,7 +85,8 @@ class TaskPage extends StatelessWidget {
                           )
                         ]
                       ),
-                      body: buildBody(context)
+                      body: buildBody(context),
+                      bottomNavigationBar: const MainBottomNavBar(),
                     )
                   )
                 );
