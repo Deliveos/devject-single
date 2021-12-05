@@ -13,10 +13,10 @@ class SettingProvider implements IProvider<Settings> {
     final db = await _provider.database;
     return await db.rawInsert(
       '''
-      INSERT INTO settings(is_checkbox)
+      INSERT INTO settings(is_dark_theme)
       VALUE(?)
       ''',
-      [settings.useCheckBox]
+      [settings.isDarkTheme]
     );
   }
 
@@ -58,10 +58,10 @@ class SettingProvider implements IProvider<Settings> {
     return await db.rawUpdate(
       '''
       UPDATE settings
-      SET is_checkbox=?
+      SET is_dark_theme=?
       ''',
       [
-        settings.useCheckBox ? 1 : 0
+        settings.isDarkTheme! ? 1 : 0
       ]
     );
   }

@@ -1,28 +1,61 @@
-class Task {
+import 'package:devject_single/providers/tasks_provider.dart';
+import 'package:equatable/equatable.dart';
+
+class Task extends Equatable{
   /// Unique index for every task
   final int? id;
   /// Task name
   final String name;
-  /// Can be used to supplement information about task
-  final String? description;
+  /// Goal of the task
+  final String? goal;
+  /// ID of project
   final int projectId;
+  /// Parent task ID
   final int? parentId;
   /// Start date of the task
   final DateTime? startDate;
   /// End date of the task
   final DateTime? endDate;
-  /// Task progress as a percentage
-  final int progress;
+  /// Priority of the task.
+  /// 
+  /// Can be:
+  /// 
+  /// |Name|Value|
+  /// |---|---|
+  /// |`Lock`|0|
+  /// |`Waiting`|1|
+  /// |`In process`|2|
+  /// |`Done`|3|
+  final int priority;
+  /// Status of the task.
+  /// 
+  /// Can be:
+  /// 
+  /// |Name|Value|
+  /// |---|---|
+  /// |`High`|2|
+  /// |`Medium`|1|
+  /// |`Low`|0|
+  final int status;
+  /// Subtask count for the task
+  final int subtaskCount;
+  /// Complited subtask count for the task
+  final int complitedSubaskCount;
+  final bool isComplited;
   
-  Task({
+  const Task({
     this.id,
     required this.name, 
-    this.description,
+    this.goal,
     this.parentId,
     required this.projectId,
     this.startDate, 
     this.endDate,
-    this.progress = 0
+    this.priority = 0,
+    this.status = 0,
+    this.subtaskCount = 0,
+    this.complitedSubaskCount = 0,
+    this.isComplited = false,
   });
 
   /// Create `Task` instance from `Map<String, dynamic>`.
@@ -34,56 +67,119 @@ class Task {
   ///   "description": "Example task",
   ///   "start_date": null,
   ///   "end_date": null,
+  ///   "priority": 0,
+  ///   "status": 1,
   ///   "progress": 100
   /// }
   /// ```
   Task.fromMap(Map<String, dynamic> map):
-  id = map['id'],
-  name = map['name'], 
-  description = map['description'],
-  projectId = map['project_id'],
-  parentId = map['parent_id'],
-  startDate = map['start_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['start_date']) : null,
-  endDate = map['end_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['end_date']) : null,
-  progress = map['progress'];
+  id = map[TasksTableField.id],
+  name = map[TasksTableField.name], 
+  goal = map[TasksTableField.goal],
+  projectId = map[TasksTableField.projectId],
+  parentId = map[TasksTableField.parentId],
+  startDate = map[TasksTableField.startDate] != null 
+    ? DateTime.fromMillisecondsSinceEpoch(map['start_date']) 
+    : null,
+  endDate = map[TasksTableField.endDate] != null 
+    ? DateTime.fromMillisecondsSinceEpoch(map['end_date']) 
+    : null,
+  priority = map[TasksTableField.priority],
+  status = 0,
+  subtaskCount = map[TasksTableField.subtaskCount],
+  complitedSubaskCount = map[TasksTableField.complitedSubaskCount],
+  isComplited = map[TasksTableField.isComplited] != 0 ? true : false;
+
+  const Task.byDefault():
+  id = null,
+  name = '',
+  goal = '',
+  isComplited = false,
+  subtaskCount = 0,
+  complitedSubaskCount = 0,
+  startDate = null,
+  endDate = null,
+  projectId = 0,
+  parentId = null,
+  status = 0,
+  priority = 0;
+
 
   /// Convert `Task` instance to `Map<String, dynamic>`
   Map<String, dynamic> toMap() => <String, dynamic>{
-    'id': id,
-    'name': name,
-    'description': description,
-    'project_id': projectId,
-    'parent_id': parentId,
-    'start_date': startDate?.millisecondsSinceEpoch ,
-    'end_date': endDate?.millisecondsSinceEpoch,
-    'progress': progress
+    TasksTableField.id                   : id,
+    TasksTableField.name                 : name,
+    TasksTableField.goal                 : goal,
+    TasksTableField.projectId            : projectId,
+    TasksTableField.parentId             : parentId,
+    TasksTableField.startDate            : startDate?.millisecondsSinceEpoch ,
+    TasksTableField.endDate              : endDate?.millisecondsSinceEpoch,
+    TasksTableField.priority             : priority,
+    TasksTableField.subtaskCount         : subtaskCount,
+    TasksTableField.complitedSubaskCount : complitedSubaskCount,
+    TasksTableField.isComplited          : isComplited ? 1 : 0
   };
 
   /// Create copy of `Task` instance with new parameters
   Task copyWith({
     int? id,
     String? name,
-    String? description,
+    String? goal,
     int? projectId,
     int? parentId,
     DateTime? startDate,
     DateTime? endDate,
-    int? progress
+    int? priority,
+    int? subtaskCount,
+    int? complitedSubaskCount,
+    int? status,
+    bool? isComplited,
   }) => Task(
     id: id ?? this.id,
     name: name ?? this.name,
-    description: description ?? this.description,
+    goal: goal ?? this.goal,
     projectId: projectId ?? this.projectId,
     parentId: parentId ?? this.parentId,
     startDate: startDate ?? this.startDate,
     endDate: endDate ?? this.endDate,
-    progress: progress ?? this.progress
+    priority: priority ?? this.priority,
+    subtaskCount: subtaskCount ?? this.subtaskCount,
+    complitedSubaskCount: complitedSubaskCount ?? this.complitedSubaskCount,
+    status: status ?? this.status,
+    isComplited: isComplited ?? this.isComplited
   );
 
   @override
   String toString() {
-    return 'Task { id:$id, name:$name, description:$description, '
-    'projectId:$projectId, parentId:$parentId, startDate:$startDate, '
-    'endDate:$endDate, progress:$progress}';
+    return 'Task { '
+    'id: $id, '
+    'name: $name, '
+    'description: $goal, '
+    'projectId: $projectId, '
+    'parentId: $parentId, '
+    'startDate: $startDate, '
+    'endDate: $endDate, '
+    'priority: $priority, '
+    'subtaskCount: $subtaskCount, '
+    'complitedSubaskCount: $complitedSubaskCount, '
+    'status: $status, '
+    'isComplited: $isComplited '
+    '}';
   }
+
+  @override
+  List<Object?> get props => [
+    id, 
+    name, 
+    goal, 
+    projectId, 
+    parentId, 
+    startDate, 
+    endDate, 
+    priority, 
+    subtaskCount,
+    complitedSubaskCount,
+    status, 
+    isComplited, 
+  ];
 }

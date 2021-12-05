@@ -9,16 +9,20 @@ class Project {
   final DateTime? startDate;
   /// End date of project development
   final DateTime? endDate;
-  /// Project development progress as a percentage
-  final int progress;
+  /// Tasks count for the project
+  final int tasksCount;
+  /// Complited tasks count for the project
+  final int complitedTaskCount;
 
   Project({
     this.id,
     required this.name, 
     this.description,
     this.startDate, 
-    this.endDate, 
-    this.progress = 0});
+    this.endDate,
+    this.tasksCount = 0,
+    this.complitedTaskCount = 0
+  });
 
   /// Create `Project` instance from `Map<String, dynamic>`.
   /// Map example:
@@ -38,16 +42,18 @@ class Project {
   description = map['description'],
   startDate = map['start_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['start_date']) : null,
   endDate = map['end_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['end_date']) : null,
-  progress = map['progress'];
+  tasksCount = map['task_count'],
+  complitedTaskCount = map['complited_task_count'];
 
   /// Convert `Project` instance to `Map<String, dynamic>`
   Map<String, dynamic> toMap() => <String, dynamic>{
-    "id": id,
-    "name": name,
-    "description": description,
-    "start_date": startDate?.millisecondsSinceEpoch ,
-    "end_date": endDate?.millisecondsSinceEpoch,
-    "progress": progress
+    'id': id,
+    'name': name,
+    'description': description,
+    'start_date': startDate?.millisecondsSinceEpoch ,
+    'end_date': endDate?.millisecondsSinceEpoch,
+    'task_count': tasksCount,
+    'complited_task_count': complitedTaskCount,
   };
 
   /// Create copy of `Project` instance with new parameters
@@ -57,18 +63,28 @@ class Project {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
-    int? progress
+    int? tasksCount,
+    int? complitedTaskCount,
   }) => Project(
     id: id ?? this.id,
     name: name ?? this.name,
     description: description ?? this.description,
     startDate: startDate ?? this.startDate,
     endDate: endDate ?? this.endDate,
-    progress: progress ?? this.progress
+    tasksCount: tasksCount ?? this.tasksCount,
+    complitedTaskCount: complitedTaskCount ?? this.complitedTaskCount,
   );
 
   @override
   String toString() {
-    return 'Project {id:$id, name=$name, description=$description, startDate=$startDate, endDate=$endDate, progress=$progress}';
+    return 'Project {'
+    'id:$id, '
+    'name=$name, '
+    'description=$description, '
+    'startDate=$startDate, '
+    'endDate=$endDate, '
+    'taskCount=$tasksCount, '
+    'complitedTaskCount=$complitedTaskCount '
+    '}';
   }
 }

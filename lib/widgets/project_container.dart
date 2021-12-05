@@ -5,8 +5,9 @@ import 'package:devject_single/models/project.dart';
 import 'package:devject_single/pages/project_page.dart';
 import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/backdrop_filter_container.dart';
-import 'package:expandable/expandable.dart';
+import 'package:devject_single/widgets/system_info_item.dart';
+import 'package:expandable_text/expandable_text.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,140 +23,147 @@ class ProjectContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
-    return BackdropFilterContaiter(
-      margin: EdgeInsets.symmetric(vertical: ScreenSize.height(context, 1)),
-      padding: EdgeInsets.all(ScreenSize.width(context, 5)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          /*
-          * PROJECT NAME
-          */
-          RichText(
-            text: TextSpan(
-              text:  project.name,
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                fontWeight: FontWeight.bold
-              ),
-              recognizer: TapGestureRecognizer()..onTap = () async {
-                BlocProvider.of<SelectedProjectCubit>(context).select(
-                  await ProjectsProvider.instance.getOne(project.id!)
-                );
-                await BlocProvider.of<TasksCubit>(context).load(project.id!);
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                    builder: (context) =>  BlocProvider.value(
-                      value: BlocProvider.of<SelectedProjectCubit>(context),
-                      child: const ProjectPage()
-                    )
-                  )
-                );
-              }
+    return InkWell(
+      onTap: () async {
+        BlocProvider.of<SelectedProjectCubit>(context).select(
+          await ProjectsProvider.instance.getOne(project.id!)
+        );
+        await BlocProvider.of<TasksCubit>(context).load(project.id!);
+        Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (context) =>  BlocProvider.value(
+              value: BlocProvider.of<SelectedProjectCubit>(context),
+              child: const ProjectPage()
             )
+          )
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(20)
           ),
-          SizedBox(height: ScreenSize.height(context, 1)),
-          if(project.startDate != null && project.endDate != null) 
-            ...[
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.black.withOpacity(0.07),
+              offset: Offset.zero,
+              spreadRadius: 0
+            )
+          ]
+        ),
+        margin: EdgeInsets.symmetric(vertical: ScreenSize.height(context, 1)),
+        padding: EdgeInsets.all(ScreenSize.width(context, 5)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            /*
+            * PROJECT NAME
+            */
+            Row(
+              children: [
+                Text(
+                  project.name,
+                  style: Theme.of(context).textTheme.subtitle1!,
+                )
+              ]
+            ),
+            SizedBox(height: ScreenSize.height(context, 1)),
+            /*
+            * DESCRIPTION
+            */
+            if (project.description != null && project.description!.isNotEmpty)
               Align(
                 alignment: Alignment.topLeft,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: AppLocalizations.of(context)!.start + ": ",
-                        style: Theme.of(context).textTheme.bodyText2
-                      ),
-                      TextSpan(
-                        text: dateFormat.format(project.startDate!),
-                        style: Theme.of(context).textTheme.bodyText1
-                      ),
-                    ]
-                  )
+                child: ExpandableText(
+                  project.description!,
+                  expandText: '',
+                  maxLines: 1,
+                  expandOnTextTap: true,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontStyle: FontStyle.italic
+                  ),
+                  prefixText: AppLocalizations.of(context)!.description + ": ",
+                  prefixStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontStyle: FontStyle.normal
+                  ),
+                  collapseOnTextTap: true,
                 ),
               ),
-              SizedBox(height: ScreenSize.height(context, 1)),
-              Align(
-                alignment: Alignment.topLeft,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: AppLocalizations.of(context)!.end + ": ",
-                        style: Theme.of(context).textTheme.bodyText2
-                      ),
-                      TextSpan(
-                        text: dateFormat.format(project.endDate!),
-                        style: Theme.of(context).textTheme.bodyText1
-                      ),
-                    ]
-                  )
-                ),
-              ),
-              SizedBox(height: ScreenSize.height(context, 1))
-            ]
-          else
-            Text(
-              AppLocalizations.of(context)!.timeToExecute + ": " +
-              AppLocalizations.of(context)!.indefinite.toLowerCase(),
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-          /*
-          * DESCRIPTION
-          */
-          if (project.description != null && project.description!.isNotEmpty)
-            ExpandablePanel(
-              theme: ExpandableThemeData(
-                iconColor: Theme.of(context).textTheme.bodyText2!.color,
-                iconPadding: const EdgeInsets.all(0)
-              ),
-              header: Text(
-                AppLocalizations.of(context)!.description,
-                style: Theme.of(context).textTheme.bodyText2
-              ),
-              collapsed: Text(
-                project.description!,
-                style: Theme.of(context).textTheme.bodyText1!
-                .copyWith(fontStyle: FontStyle.italic),
-                softWrap: true, 
-                maxLines: 1, 
-                overflow: TextOverflow.ellipsis
-              ),
-              expanded: Text(
-                project.description!, 
-                style: Theme.of(context).textTheme.bodyText1!
-                .copyWith(fontStyle: FontStyle.italic),
-                softWrap: true
-              ),
-            ),
-          SizedBox(height: ScreenSize.height(context, 1)),
-          /*
-          * PROGRESS
-          */
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: LinearProgressIndicator(
-                    minHeight: 10,
-                    value: project.progress.toDouble() / 100,
-                    backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
-                    valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+            SizedBox(height: ScreenSize.height(context, 1)),
+            /*
+            * PROGRESS
+            */
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: LinearProgressIndicator(
+                      minHeight: 10,
+                      value: project.tasksCount != 0 
+                        ? project.complitedTaskCount / project.tasksCount
+                        : 0,
+                      backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
+                      valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: ScreenSize.width(context, 2)),
-              Text(
-                project.progress.toString() + "%",
-                style: Theme.of(context).textTheme.bodyText1
-              )
-            ]
-          )
-        ]
-      )
+                SizedBox(width: ScreenSize.width(context, 2)),
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: project.complitedTaskCount.toString() + '/',
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).primaryColor
+                        )
+                      ),
+                      TextSpan(
+                        text: project.tasksCount.toString(),
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).textTheme.bodyText2!.color
+                        )
+                      )
+                    ]
+                  ),
+                ),
+              ]
+            ),
+            SizedBox(height: ScreenSize.height(context, 1)),
+            Row(
+              children: <Widget>[
+                SystemInfoItem(
+                  iconData: FluentIcons.calendar_ltr_24_regular, 
+                  text: project.endDate != null 
+                    ? dateFormat.format(project.endDate!)
+                    : AppLocalizations.of(context)!.indefinite
+                ),
+                Icon(
+                  FluentIcons.divider_tall_24_regular,
+                  color: Theme.of(context).iconTheme.color!.withOpacity(0.3)
+                ),
+                SystemInfoItem(
+                  iconData: FluentIcons.branch_24_regular, 
+                  text: project.tasksCount.toString()
+                ),
+                Icon(
+                  FluentIcons.divider_tall_24_regular,
+                  color: Theme.of(context).iconTheme.color!.withOpacity(0.3)
+                ),
+                SystemInfoItem(
+                  iconData: FluentIcons.checkmark_24_regular, 
+                  text: project.complitedTaskCount.toString()
+                ),
+              ]
+            )
+          ]
+        )
+      ),
     );
   }
 }

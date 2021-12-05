@@ -2,8 +2,8 @@ import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/settings_cubit.dart';
 import 'package:devject_single/models/project.dart';
+import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/background.dart';
 import 'package:devject_single/widgets/project_container.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +36,7 @@ class _MainPageState extends State<MainPage> {
             extendBodyBehindAppBar: true,
             appBar: buildAppBar(
               context,
-              title: Text(
-                AppLocalizations.of(context)!.projects,
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
+              title: AppLocalizations.of(context)!.projects,
               actions: [
                 IconButton(
                   onPressed: () => Navigator.push(
@@ -55,7 +52,10 @@ class _MainPageState extends State<MainPage> {
                 )
               ]
             ),
-            body: Background(
+            body: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: ScreenSize.width(context, 5)
+              ),
               child: Column(
                 children: [
                   projects.isNotEmpty 
@@ -77,7 +77,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   )
                 ]
-              ) 
+              ),
             ),
             floatingActionButton: FloatingActionButton(
               child: const Icon(

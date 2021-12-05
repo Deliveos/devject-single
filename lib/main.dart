@@ -38,30 +38,32 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<SettingsCubit, Settings>(
         builder: (context, settingsState) {
           return MaterialApp(
-              title: 'Devject Single',
-              debugShowCheckedModeBanner: false,
-              themeMode: settingsState.isDarkTheme 
+            title: 'Devject Single',
+            debugShowCheckedModeBanner: false,
+            themeMode: settingsState.isDarkTheme != null
+              ? ThemeMode.system 
+              :settingsState.isDarkTheme!
                 ? ThemeMode.dark
                 : ThemeMode.light,
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              supportedLocales: L10n.all,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate
-              ],
-              initialRoute: MainPage.routeName,
-              routes: {
-                MainPage.routeName: (context) => const MainPage(),
-                ProjectPage.routeName: (context) => const ProjectPage(),
-                TaskPage.routeName: (context) => const TaskPage(),
-                SettingsPage.routeName: (context) => const SettingsPage(),
-                AddProjectPage.routeName: (context) => const AddProjectPage(),
-                AddTaskPage.routeName: (context) => const AddTaskPage()
-              },
-            );
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            supportedLocales: L10n.all,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            initialRoute: MainPage.routeName,
+            routes: {
+              MainPage.routeName: (context) => const MainPage(),
+              ProjectPage.routeName: (context) => const ProjectPage(),
+              TaskPage.routeName: (context) => const TaskPage(),
+              SettingsPage.routeName: (context) => const SettingsPage(),
+              AddProjectPage.routeName: (context) => const AddProjectPage(),
+              AddTaskPage.routeName: (context) => const AddTaskPage()
+            },
+          );
         },
       ),
     );

@@ -22,10 +22,7 @@ class SettingsPage extends StatelessWidget {
           extendBodyBehindAppBar: true,
           appBar: buildAppBar(
             context,
-            title: Text(
-              AppLocalizations.of(context)!.settings,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
+            title: AppLocalizations.of(context)!.settings,
           ),
           body: Background(
             child: Column(
@@ -35,30 +32,11 @@ class SettingsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.useCheckboxToMarkProgress,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    Switch(
-                      value: settingsState.useCheckBox, 
-                      onChanged: (value) async {
-                        await BlocProvider.of<SettingsCubit>(context).update(
-                          settingsState.copyWith(
-                            useCheckBox: value
-                          )
-                        );                          
-                      }
-                    )
-                  ]
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
                       AppLocalizations.of(context)!.darkTheme,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Switch(
-                      value: settingsState.isDarkTheme, 
+                      value: settingsState.isDarkTheme??  false, 
                       onChanged: (value) async {
                         await BlocProvider.of<SettingsCubit>(context).update(
                           settingsState.copyWith(

@@ -8,20 +8,20 @@ class TasksCubit extends Cubit<List<Task>> {
 
   final TasksProvider _provider = TasksProvider.instance;
 
-  Future load(int projectId, {int? parentId}) async {
-    emit(await _provider.getFor(projectId, parentId: parentId));
+  Future load(int projectId, {int? id}) async {
+    emit(await _provider.getFor(projectId, id: id));
   }
 
   Future add(Task task) async {
     await _provider.add(task);
     await load(
       task.projectId,
-      parentId: task.parentId
+      id: task.parentId
     );
   }
 
-  Future update(Task task) async {
+  Future update(Task task, int? id) async {
     await _provider.update(task);
-    await load(task.projectId, parentId: task.parentId);
+    await load(task.projectId, id: id);
   }
 }

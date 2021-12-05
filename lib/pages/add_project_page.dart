@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:devject_single/constants/colors.dart';
+import 'package:devject_single/constants/sizes.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/utils/pick_date_range.dart';
 import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/background.dart';
 import 'package:devject_single/widgets/button.dart';
 import 'package:devject_single/widgets/input_field.dart';
 import 'package:devject_single/widgets/input_text_editing_controller.dart';
@@ -34,13 +34,9 @@ class _AddProjectPageState extends State<AddProjectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: buildAppBar(
         context,
-        title: Text(
-          AppLocalizations.of(context)!.newProject,
-          style: Theme.of(context).textTheme.subtitle1,
-        )
+        title: AppLocalizations.of(context)!.newProject,
       ),
       body: buildBody(context) 
     );
@@ -51,119 +47,142 @@ class _AddProjectPageState extends State<AddProjectPage> {
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate([
-              Background(
+              SizedBox(
+                width: ScreenSize.width(context, 100),
+                height: ScreenSize.height(context, 70),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Form(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            /*
-                            * NAME FIELD
-                            */
-                            InputField(
-                              controller: _nameController,
-                              hintText: AppLocalizations.of(context)!.projectName,
-                              validator: (String? value) {
-                                if (value == null || value.isEmpty || value.trim() == "") {
-                                  return AppLocalizations.of(context)!
-                                    .fieldCanNotBeEmpty;
-                                }
-                              }
-                            ),
-                            SizedBox(
-                              height: ScreenSize.height(context, 3),
-                            ),
-                            /*
-                            * DESCRIPTON FIELD
-                            */
-                            InputField(
-                                controller: _description,
-                                minLines: 1,
-                                maxLines: 8,
-                                hintText: AppLocalizations.of(context)!
-                                    .description),
-                            SizedBox(
-                              height: ScreenSize.height(context, 3),
-                            ),
-                            /*
-                            * DATES FIELDS
-                            */
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                InputField(
-                                  readOnly: true,
-                                  width: ScreenSize.width(context, 40),
-                                  controller: _startDateController,
-                                  hintText: AppLocalizations.of(context)!
-                                  .startDate,
-                                  onTap: () async {
-                                    await pickDateRangeForNewProject(context);
-                                  }
-                                ),
-                                Text(
-                                  "-",
-                                  style: Theme.of(context).textTheme.bodyText1
-                                ),
-                                InputField(
-                                  readOnly: true,
-                                  width: ScreenSize.width(context, 40),
-                                  controller: _endDateController,
-                                  hintText: AppLocalizations.of(context)!
-                                  .endDate,
-                                  onTap: () async {
-                                    await pickDateRangeForNewProject(context);
-                                  }
-                                )
-                              ]
-                            ),
-                            SizedBox(
-                              height: ScreenSize.height(context, 3),
-                            ),
-                            /*
-                            * CREATE NEW PROJECT BUTTON
-                            */
-                            PrimaryButton(
-                              onTap: () async {
-                                if (_nameController.isValid) {
-                                  Project project = Project(
-                                    name: _nameController.text.trim(),
-                                    description: _description.text.trim(),
-                                    startDate: dateTimeRange?.start,
-                                    endDate: dateTimeRange?.end
-                                  );
-                                  BlocProvider.of<ProjectsCubit>(context).add(project);
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.create.toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                  color: kButtonTextColor
-                                )
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30, 
-                                vertical: 5
-                              )
-                            )
-                          ]
-                        )
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: ScreenSize.height(context, 1),
+                      horizontal: ScreenSize.width(context, 5)
+                    ),
+                    padding: EdgeInsets.all(ScreenSize.width(context, 5)),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(kCardBorderRadius)
                       ),
-                      SizedBox(
-                        height: ScreenSize.height(context, 3)
-                      )
-                    ]
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          blurRadius: 10,
+                          color: Colors.black.withOpacity(0.07),
+                          offset: Offset.zero,
+                          spreadRadius: 0
+                        )
+                      ]
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Form(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              /*
+                              * NAME FIELD
+                              */
+                              InputField(
+                                controller: _nameController,
+                                hintText: AppLocalizations.of(context)!.projectName,
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty || value.trim() == "") {
+                                    return AppLocalizations.of(context)!
+                                      .fieldCanNotBeEmpty;
+                                  }
+                                }
+                              ),
+                              SizedBox(
+                                height: ScreenSize.height(context, 3),
+                              ),
+                              /*
+                              * DESCRIPTON FIELD
+                              */
+                              InputField(
+                                  controller: _description,
+                                  minLines: 1,
+                                  maxLines: 8,
+                                  hintText: AppLocalizations.of(context)!
+                                      .description),
+                              SizedBox(
+                                height: ScreenSize.height(context, 3),
+                              ),
+                              /*
+                              * DATES FIELDS
+                              */
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  InputField(
+                                    readOnly: true,
+                                    width: ScreenSize.width(context, 35),
+                                    controller: _startDateController,
+                                    hintText: AppLocalizations.of(context)!
+                                    .startDate,
+                                    onTap: () async {
+                                      await pickDateRangeForNewProject(context);
+                                    }
+                                  ),
+                                  Text(
+                                    "-",
+                                    style: Theme.of(context).textTheme.bodyText1
+                                  ),
+                                  InputField(
+                                    readOnly: true,
+                                    width: ScreenSize.width(context, 35),
+                                    controller: _endDateController,
+                                    hintText: AppLocalizations.of(context)!
+                                    .endDate,
+                                    onTap: () async {
+                                      await pickDateRangeForNewProject(context);
+                                    }
+                                  )
+                                ]
+                              ),
+                              SizedBox(
+                                height: ScreenSize.height(context, 3),
+                              ),
+                              /*
+                              * CREATE NEW PROJECT BUTTON
+                              */
+                              PrimaryButton(
+                                onTap: () async {
+                                  if (_nameController.isValid) {
+                                    Project project = Project(
+                                      name: _nameController.text.trim(),
+                                      description: _description.text.trim(),
+                                      startDate: dateTimeRange?.start,
+                                      endDate: dateTimeRange?.end
+                                    );
+                                    await BlocProvider.of<ProjectsCubit>(context).add(project);
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!.create.toUpperCase(),
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: kButtonTextColor
+                                  )
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, 
+                                  vertical: 5
+                                )
+                              )
+                            ]
+                          )
+                        ),
+                        SizedBox(
+                          height: ScreenSize.height(context, 3)
+                        )
+                      ]
+                    ),
                   )
-                )
+                ),
               )
             ])
           )

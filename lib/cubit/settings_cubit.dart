@@ -15,7 +15,6 @@ class SettingsCubit extends Cubit<Settings> {
   }
 
   Future<void> update(Settings settings) async {
-    print(settings);
     emit(settings);
     await _provider.update(settings);
   }

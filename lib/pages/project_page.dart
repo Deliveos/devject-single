@@ -1,21 +1,22 @@
-import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/constants/sizes.dart';
+import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/tasks_cubit.dart';
 import 'package:devject_single/models/project.dart';
 import 'package:devject_single/models/task.dart';
 import 'package:devject_single/pages/add_task_page.dart';
 import 'package:devject_single/pages/edit_project_page.dart';
+import 'package:devject_single/pages/main_page.dart';
+import 'package:devject_single/widgets/project_info_card.dart';
+import 'package:devject_single/providers/projects_provider.dart';
 import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/background.dart';
+import 'package:devject_single/widgets/input_field.dart';
+import 'package:devject_single/widgets/input_text_editing_controller.dart';
 import 'package:devject_single/widgets/task_container.dart';
-import 'package:expandable/expandable.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectPage extends StatelessWidget {
@@ -25,7 +26,6 @@ class ProjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
     return BlocBuilder<SelectedProjectCubit, Project?>(
       builder: (context, project) {
         return RefreshIndicator(
@@ -35,15 +35,9 @@ class ProjectPage extends StatelessWidget {
             );
           },
           child: Scaffold(
-            extendBodyBehindAppBar: true,
             appBar: buildAppBar(
               context,
-              title: Text(
-                project!.name,
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: Theme.of(context).primaryColor
-                )
-              ),
+              title: project!.name,
               actions: [
                 IconButton(
                   onPressed: () => Navigator.push(
@@ -59,170 +53,214 @@ class ProjectPage extends StatelessWidget {
                 )
               ]
             ),
-            body: Background(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: kAppBarHeight + ScreenSize.height(context, 3),),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.topCenter,
-                    child: FittedBox(
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.fill,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            height: ScreenSize.height(context, 3),
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: LinearProgressIndicator(
-                                      minHeight: 10,
-                                      value: project.progress.toDouble() / 100,
-                                      backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
-                                      valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: ScreenSize.width(context, 2)),
-                                Text(
-                                  project.progress.toString() + "%",
-                                  style: Theme.of(context).textTheme.bodyText1
-                                )
-                              ],
-                            ),
-                          )
-                        ]
-                      ),
-                    ),
-                  ),
-                  if(project.startDate != null && project.endDate != null) 
-                    ...[
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: AppLocalizations.of(context)!.start + ": ",
-                                style: Theme.of(context).textTheme.bodyText2
-                              ),
-                              TextSpan(
-                                text: dateFormat.format(project.startDate!),
-                                style: Theme.of(context).textTheme.bodyText1
-                              ),
-                            ]
-                          )
-                        ),
-                      ),
-                      SizedBox(height: ScreenSize.height(context, 1)),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: AppLocalizations.of(context)!.end + ": ",
-                                style: Theme.of(context).textTheme.bodyText2
-                              ),
-                              TextSpan(
-                                text: dateFormat.format(project.endDate!),
-                                style: Theme.of(context).textTheme.bodyText1
-                              ),
-                            ]
-                          )
-                        ),
-                      ),
-                      SizedBox(height: ScreenSize.height(context, 1))
-                    ]
-                  else
-                    Text(
-                      AppLocalizations.of(context)!.timeToExecute + ": " +
-                      AppLocalizations.of(context)!.indefinite.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                  if (project.description != null && project.description!.isNotEmpty)
-                    ExpandablePanel(
-                      theme: ExpandableThemeData(
-                        iconColor: Theme.of(context).textTheme.bodyText2!.color,
-                        iconPadding: const EdgeInsets.all(0)
-                      ),
-                      header: Text(
-                        AppLocalizations.of(context)!.description,
-                        style: Theme.of(context).textTheme.bodyText2
-                      ),
-                      collapsed: Text(
-                        project.description!,
-                        style: Theme.of(context).textTheme.bodyText1!
-                        .copyWith(fontStyle: FontStyle.italic)
-                        ,
-                        softWrap: true, 
-                        maxLines: 1, 
-                        overflow: TextOverflow.ellipsis
-                      ),
-                      expanded: Text(
-                        project.description!, 
-                        style: Theme.of(context).textTheme.bodyText1!
-                        .copyWith(fontStyle: FontStyle.italic),
-                        softWrap: true
-                      ),
-                    ),
-                    const Divider(),
-                    BlocBuilder<TasksCubit, List<Task>>(
-                      builder: (context, tasks) {
-                        if (tasks.isNotEmpty) {
-                          return Expanded(
-                            child: ListView.builder(
-                              itemCount: tasks.length,
-                              itemBuilder: (context, index) => TaskContainer(tasks[index])
-                            ),
-                          );
-                        } else {
-                          return Expanded(
-                            child: SizedBox(
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context)!.noTasks,
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                )
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                    )
-                ],
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: const Icon(
-                Icons.add, 
-                size: 30, 
-                color: kButtonTextColor
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider.value(
-                      value: BlocProvider.of<SelectedProjectCubit>(context),
-                      child: const AddTaskPage(),
-                    )
-                  )
-                );
-              }
-            )
+            body: buildBody(context),
           ),
         );
       },
     );
+  }
+
+  Widget buildBody(BuildContext context) {
+    final project = BlocProvider.of<SelectedProjectCubit>(context).state!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        ProjectInfoCard(project: project),
+        SizedBox(width: ScreenSize.width(context, 5)),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: ScreenSize.width(context, 5)
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20)
+              ),
+            ),
+            // height: ScreenSize.height(context, 40),
+            width: ScreenSize.width(context, 100),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(ScreenSize.width(context, 5)),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.subtasks,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(kBorderRadius)
+                              ),
+                              border: Border.all(
+                                color: Theme.of(context).backgroundColor,
+                                width: kBorderWidth
+                              )
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context) => BlocProvider.value(
+                                      value: BlocProvider.of<SelectedProjectCubit>(context),
+                                      child: const AddTaskPage(),
+                                    )
+                                  )
+                                );
+                              }, 
+                              icon: const Icon(FluentIcons.add_24_regular)
+                            ),
+                          )
+                        ],
+                      )
+                    ] 
+                  ),
+                ),
+                BlocBuilder<TasksCubit, List<Task>>(
+                  builder: (context, tasks) {
+                    if (tasks.isNotEmpty) {
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: tasks.length,
+                          itemBuilder: (context, index) => TaskContainer(tasks[index])
+                        ),
+                      );
+                    } else {
+                      return Expanded(
+                        child: SizedBox(
+                          child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.noTasks,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            )
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+    showDeleteProjectDialog(BuildContext context) async {
+    final InputTextEditingController _controller = InputTextEditingController();
+    return await showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        title: Text(" asd"),
+        content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: AppLocalizations.of(context)!.enter + " ",
+                  style: Theme.of(context).textTheme.bodyText1
+                ),
+                TextSpan(
+                  text: BlocProvider.of<SelectedProjectCubit>(context).state!.name,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.red)
+                ),
+                TextSpan(
+                  text: " " + AppLocalizations.of(context)!.toDeleteThisProject,
+                  style: Theme.of(context).textTheme.bodyText1
+                )
+              ]
+            )
+          ),
+          InputField(
+            controller: _controller,
+          ),
+        ]
+        ),
+        actions: [
+          InkWell(
+            borderRadius: BorderRadius.circular(30),
+            onTap: () async {
+              if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
+                await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
+                await BlocProvider.of<ProjectsCubit>(context).load();
+                Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
+              }
+            },
+            child: Container(
+              height: 50,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                color: Colors.transparent,
+                border: Border(
+                  top: BorderSide(color: Colors.red, width: 1),
+                  left: BorderSide(color: Colors.red, width: 1),
+                  right: BorderSide(color: Colors.red, width: 1),
+                  bottom: BorderSide(color: Colors.red, width: 1)
+                )
+              ),
+              child: Center(
+                child: Text(
+                  AppLocalizations.of(context)!.delete.toUpperCase(),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.red),
+                )
+              ),
+            )
+          ),
+        ],
+      )
+    );
+    // return Container(
+    //   margin: EdgeInsets.only(
+    //     top: ScreenSize.height(context, 5)
+    //   ),
+    //   padding: EdgeInsets.all(ScreenSize.width(context, 3)),
+    //   child: 
+    //       SizedBox(
+    //         height: ScreenSize.height(context, 3),
+    //       ),
+    //       InkWell(
+    //         borderRadius: BorderRadius.circular(30),
+    //         onTap: () async {
+    //           if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
+    //             await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
+    //             await BlocProvider.of<ProjectsCubit>(context).load();
+    //             Navigator.of(context).pushNamedAndRemoveUntil(MainPage.routeName, (route) => false);
+    //           }
+    //         },
+    //         child: Container(
+    //           height: 50,
+    //           decoration: const BoxDecoration(
+    //             borderRadius: BorderRadius.all(Radius.circular(30)),
+    //             color: Colors.transparent,
+    //             border: Border(
+    //               top: BorderSide(color: Colors.red, width: 1),
+    //               left: BorderSide(color: Colors.red, width: 1),
+    //               right: BorderSide(color: Colors.red, width: 1),
+    //               bottom: BorderSide(color: Colors.red, width: 1)
+    //             )
+    //           ),
+    //           child: Center(
+    //             child: Text(
+    //               AppLocalizations.of(context)!.delete.toUpperCase(),
+    //               style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.red),
+    //             )
+    //           ),
+    //         )
+    //       ),
+    //     ]
+    //   )
+    // );
   }
 }

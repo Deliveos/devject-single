@@ -55,10 +55,7 @@ class _EditProjectPageState extends State<EditProjectPage> {
       extendBodyBehindAppBar: true,
       appBar: buildAppBar(
         context,
-        title: Text(
-          AppLocalizations.of(context)!.editProject,
-          style: Theme.of(context).textTheme.subtitle1,
-        ),
+        title: AppLocalizations.of(context)!.editProject,
         actions: [
           PopupMenuButton(
             color: Theme.of(context).backgroundColor.withOpacity(0.5),

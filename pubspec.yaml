@@ -37,13 +37,15 @@ dependencies:
   animated_text_kit: ^4.2.1
   sqflite: ^2.0.0+4
   path_provider: ^2.0.5
-  flutter_bloc: ^7.3.3
+  flutter_bloc: ^8.0.0
   flutter_typeahead: ^3.2.1
   flutter_svg: ^0.23.0+1
   fluentui_system_icons: ^1.1.145
   image_picker: ^0.8.4+4
   image_cropper: ^1.4.1
-  expandable: ^5.0.1
+  expandable_text: ^2.2.0
+  percent_indicator: ^3.4.0
+  equatable: ^2.0.3
 
 
   # The following adds the Cupertino Icons font to your application.

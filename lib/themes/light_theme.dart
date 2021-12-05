@@ -1,4 +1,5 @@
 import 'package:devject_single/constants/colors.dart';
+import 'package:devject_single/constants/font.dart';
 import 'package:flutter/material.dart';
 
 
@@ -6,12 +7,17 @@ final ThemeData lightTheme = ThemeData(
   appBarTheme: const AppBarTheme(
     centerTitle: true,
     elevation: 0,
-    toolbarHeight: 50,
     shadowColor: Colors.transparent,
+    color: Colors.transparent,
     iconTheme: IconThemeData(
-      color: kPrimaryLightColor,
+      color: kTextColorForLightTheme,
       size: 20
-    )
+    ),
+    titleTextStyle: TextStyle(
+      fontSize: kCaptionSize,
+      fontWeight: FontWeight.bold,
+      color: kTextColorForLightTheme
+    ),
   ),
   buttonTheme: const ButtonThemeData(
     buttonColor: kButtonTextColor
@@ -54,53 +60,55 @@ final ThemeData lightTheme = ThemeData(
   primaryColor: kPrimaryLightColor,
   primaryColorLight: kPrimaryLightColor,
   primaryColorDark: kPrimaryDarkColor,
-  backgroundColor: kBackgroundDarkColorForLightTheme,
+
+  backgroundColor: kBackgroundLightColorForLightTheme,
+
   dividerTheme: const DividerThemeData(
-      color: kPrimaryDarkColor
+      color: kSystemTextColorForLightTheme
+  ),
+  textTheme: const TextTheme(
+    caption: TextStyle(
+      fontSize: kCaptionSize,
+      fontWeight: FontWeight.bold
     ),
-    textTheme: const TextTheme(
-      subtitle1: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 18.0
-      ),
-      subtitle2: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 14.0
-      ),
-      bodyText1: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w300
-      ),
-      bodyText2: TextStyle(
-        color: kPrimaryLightColor,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w700
-      ),
-      caption: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 36.0,
-        fontWeight: FontWeight.w700
-      ),
-      button: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 20.0,
-        fontWeight: FontWeight.w700
-      ),
-      headline2: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 16.0,
-        fontWeight: FontWeight.w600
-      ),
-      headline4: TextStyle(
-        color: kTextColorForLightTheme,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w500,
-        decoration: TextDecoration.underline,
-      ),
-      headline6: TextStyle(
-        fontSize: 16.0,
-        fontFamily: "NotoColorEmoji"
-      ),
-    )
+    subtitle1: TextStyle(
+      color: kTextColorForLightTheme,
+      fontSize: 18.0
+    ),
+    subtitle2: TextStyle(
+      color: kTextColorForLightTheme,
+      fontSize: 14.0
+    ),
+    bodyText1: TextStyle(
+      color: kTextColorForLightTheme,
+      fontSize: 14.0,
+    ),
+    bodyText2: TextStyle(
+      color: kSystemTextColorForLightTheme,
+      fontSize: 14.0,
+    ),
+
+    button: TextStyle(
+      color: kTextColorForLightTheme,
+      fontSize: 20.0,
+      fontWeight: FontWeight.w700
+    ),
+    headline2: TextStyle(
+      color: kTextColorForLightTheme,
+      fontSize: 16.0,
+      fontWeight: FontWeight.w600
+    ),
+    headline4: TextStyle(
+      color: kTextColorForLightTheme,
+      fontSize: 14.0,
+      fontWeight: FontWeight.w500,
+      decoration: TextDecoration.underline,
+    ),
+    headline6: TextStyle(
+      fontSize: 16.0,
+      fontFamily: "NotoColorEmoji"
+    ),
+  ),
+
+  scaffoldBackgroundColor: kBackgroundDarkColorForLightTheme
 );

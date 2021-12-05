@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:devject_single/providers/projects_provider.dart';
+import 'package:devject_single/providers/tasks_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -14,7 +16,6 @@ class DatabaseProvider {
 
   Future<Database> get database async {
     _database ??= await _initiateDatabase();
-    
     return _database!;
   }
 
@@ -25,43 +26,42 @@ class DatabaseProvider {
   }
 
   _onCreate(Database database, int version) async {
-    await database.execute('''
-      CREATE TABLE projects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        start_date TIMESTAMP,
-        end_date TIMESTAMP,
-        progress INTEGER DEFAULT 0
+    await database.execute(
+      '''
+      CREATE TABLE ${ProjectsProvider.tableName}(
+        ${ProjectsTableField.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${ProjectsTableField.name} VARCHAR(255) NOT NULL,
+        ${ProjectsTableField.description} TEXT,
+        ${ProjectsTableField.startDate} TIMESTAMP,
+        ${ProjectsTableField.endDate} TIMESTAMP,
+        ${ProjectsTableField.taskCount} INTEGER DEFAULT 0,
+        ${ProjectsTableField.complitedTaskCount} INTEGER DEFAULT 0
       );
     ''');
     await database.execute('''
-      CREATE TABLE tasks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        start_date TIMESTAMP,
-        start_when_finished_id INT,
-        end_date TIMESTAMP,
-        time_execution TIMESTAMP,
-        project_id INTEGER NOT NULL,
-        parent_id INTEGER,
-        progress INTEGER DEFAULT 0,
-        FOREIGN KEY(project_id) REFERENCES projects(id),
-        FOREIGN KEY(parent_id) REFERENCES tasks(id),
-        FOREIGN KEY(start_when_finished_id) REFERENCES tasks(id)
+      CREATE TABLE ${TasksProvider.tableName} (
+        ${TasksTableField.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${TasksTableField.name} VARCHAR(255) NOT NULL,
+        ${TasksTableField.goal} TEXT,
+        ${TasksTableField.priority} INTEGER DEFAULT 0,
+        ${TasksTableField.startDate} TIMESTAMP,
+        ${TasksTableField.endDate} TIMESTAMP,
+        ${TasksTableField.projectId} INTEGER NOT NULL,
+        ${TasksTableField.parentId} INTEGER,
+        ${TasksTableField.subtaskCount} INTEGER DEFAULT 0,
+        ${TasksTableField.complitedSubaskCount} INTEGER DEFAULT 0,
+        ${TasksTableField.isComplited} INTEGER DEFAULT 0,
+        FOREIGN KEY(${TasksTableField.projectId}) 
+          REFERENCES ${ProjectsProvider.tableName}(${ProjectsTableField.id}),
+        FOREIGN KEY(${TasksTableField.parentId}) 
+          REFERENCES ${TasksProvider.tableName}(${TasksTableField.id})
       );
     ''');
     await database.execute('''
       CREATE TABLE settings (
-        locale VARCHAR(4)
-        is_checkbox INTEGER NOT NULL,
-        is_dark_theme INTEGER NOT NULL
+        locale VARCHAR(4),
+        is_dark_theme INTEGER
       );
-    ''');
-    await database.execute('''
-      INSERT INTO settings(is_checkbox, is_dark_theme)
-      VALUES(0, 1);
     ''');
   }
 }

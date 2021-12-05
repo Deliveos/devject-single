@@ -42,7 +42,7 @@ packages:
       name: bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.2.1"
+    version: "8.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -127,13 +127,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  expandable:
+  equatable:
     dependency: "direct main"
     description:
-      name: expandable
+      name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.1"
+    version: "2.0.3"
+  expandable_text:
+    dependency: "direct main"
+    description:
+      name: expandable_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   ffi:
     dependency: transitive
     description:
@@ -166,7 +173,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.3.3"
+    version: "8.0.0"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -429,6 +436,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.11.1"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.4.0"
   petitparser:
     dependency: transitive
     description:

@@ -13,6 +13,7 @@ final ThemeData darkTheme = ThemeData(
       size: 20
     )
   ),
+  
   buttonTheme: const ButtonThemeData(
     buttonColor: kButtonTextColor
   ),
