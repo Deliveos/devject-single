@@ -79,7 +79,6 @@ class ProjectPage extends StatelessWidget {
                 topRight: Radius.circular(20)
               ),
             ),
-            // height: ScreenSize.height(context, 40),
             width: ScreenSize.width(context, 100),
             child: Column(
               mainAxisSize: MainAxisSize.max,

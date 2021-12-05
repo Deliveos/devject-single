@@ -57,7 +57,7 @@ class TaskContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               if (
-                task.subtaskCount == 0 &&
+                task.subtasksCount == 0 &&
                 (
                   task.status == Status.inProcess.index ||
                   task.status == Status.completed.index ||
@@ -153,49 +153,19 @@ class TaskContainer extends StatelessWidget {
                       );
                     }
                       
-                      // Load updated tasks
-                      await context.read<TasksCubit>().load(
-                        slcdPrjctCubit.state!.id!,
-                        id: task.parentId
-                      );
-                      // Load selected project
-                      slcdPrjctCubit.select(
-                        await ProjectsProvider.instance.getOne(
-                          slcdPrjctCubit.state!.id!
-                        )
-                      );
-                      // Load updated projects
-                      await context.read<ProjectsCubit>().load();
-                  //   final complidedTask = task.copyWith(
-                  //     isComplited: value,
-                  //     status: value!
-                  //       ? Status.completed.index
-                  //       : null
-                  //   );
-                  //   if (!value) {
-                  //     if (task.parentId != null) {
-                  //       final updatedSelectedTask = context.read<SelectedTaskCubit>().state.copyWith(
-                  //         complitedSubaskCount: context.read<SelectedTaskCubit>().state.complitedSubaskCount - 1
-                  //       );
-                  //       await context.read<TasksCubit>().update(
-                  //         updatedSelectedTask
-                  //       );
-                  //     }
-                  //   }
-                  //   await context.read<TasksCubit>().update(complidedTask);
-                  //   await context.read<TasksCubit>().load(
-                  //     context.read<SelectedProjectCubit>().state!.id!,
-                  //     parentId: task.parentId
-                  //   );
-                  //   if (task.parentId != null) {
-                  //     await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
-                  //       context.read<SelectedTaskCubit>().state
-                  //     );
-                  //   } else {
-                  //     await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
-                  //       context.read<SelectedProjectCubit>().state!.id!
-                  //     );
-                  //   }
+                    // Load updated tasks
+                    await context.read<TasksCubit>().load(
+                      slcdPrjctCubit.state!.id!,
+                      id: task.parentId
+                    );
+                    // Load selected project
+                    slcdPrjctCubit.select(
+                      await ProjectsProvider.instance.getOne(
+                        slcdPrjctCubit.state!.id!
+                      )
+                    );
+                    // Load updated projects
+                    await context.read<ProjectsCubit>().load();
                   },
                 ),
               /*
@@ -277,7 +247,6 @@ class TaskContainer extends StatelessWidget {
                 collapseOnTextTap: true,
               ),
             ),
-
           SizedBox(height: ScreenSize.height(context, 1)),
           Row(
             children: <Widget>[
@@ -287,7 +256,7 @@ class TaskContainer extends StatelessWidget {
                   ? dateFormat.format(task.endDate!)
                   : AppLocalizations.of(context)!.indefinite
               ),
-              if (task.subtaskCount != 0)
+              if (task.subtasksCount != 0)
               ...[
                 Icon(
                 FluentIcons.divider_tall_24_regular,
@@ -295,7 +264,7 @@ class TaskContainer extends StatelessWidget {
                 ),
                 SystemInfoItem(
                   iconData: FluentIcons.branch_24_regular, 
-                  text: task.subtaskCount.toString()
+                  text: task.subtasksCount.toString()
                 ),
                 Icon(
                   FluentIcons.divider_tall_24_regular,

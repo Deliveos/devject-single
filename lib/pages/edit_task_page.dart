@@ -325,7 +325,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 final parent = await tasksProvider.getOne(selectedTaskCubit.state.parentId!);
                 await context.read<TasksCubit>().update(
                   parent.copyWith(
-                    subtaskCount: parent.subtaskCount - 1,
+                    subtaskCount: parent.subtasksCount - 1,
                     complitedSubaskCount: selectedTaskCubit.state.isComplited 
                     ? parent.complitedSubaskCount - 1
                     : parent.complitedSubaskCount
@@ -359,7 +359,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
               if (selectedTaskCubit.state.parentId != null) {
                 context.read<TasksCubit>().update(
                   selectedTaskCubit.state.copyWith(
-                    subtaskCount: selectedTaskCubit.state.subtaskCount - 1
+                    subtaskCount: selectedTaskCubit.state.subtasksCount - 1
                   ),
                   selectedTaskCubit.state.id
                 );

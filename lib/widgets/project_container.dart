@@ -97,43 +97,44 @@ class ProjectContainer extends StatelessWidget {
             /*
             * PROGRESS
             */
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: LinearProgressIndicator(
-                      minHeight: 10,
-                      value: project.tasksCount != 0 
-                        ? project.complitedTaskCount / project.tasksCount
-                        : 0,
-                      backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
-                      valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+            if (project.tasksCount != 0)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: LinearProgressIndicator(
+                        minHeight: 10,
+                        value: project.tasksCount != 0 
+                          ? project.complitedTaskCount / project.tasksCount
+                          : 0,
+                        backgroundColor: Theme.of(context).inputDecorationTheme.fillColor!.withOpacity(0.5),
+                        valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: ScreenSize.width(context, 2)),
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: project.complitedTaskCount.toString() + '/',
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).primaryColor
+                  SizedBox(width: ScreenSize.width(context, 2)),
+                  RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: project.complitedTaskCount.toString() + '/',
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).primaryColor
+                          )
+                        ),
+                        TextSpan(
+                          text: project.tasksCount.toString(),
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).textTheme.bodyText2!.color
+                          )
                         )
-                      ),
-                      TextSpan(
-                        text: project.tasksCount.toString(),
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).textTheme.bodyText2!.color
-                        )
-                      )
-                    ]
+                      ]
+                    ),
                   ),
-                ),
-              ]
-            ),
+                ]
+              ),
             SizedBox(height: ScreenSize.height(context, 1)),
             Row(
               children: <Widget>[

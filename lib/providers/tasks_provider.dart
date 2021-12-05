@@ -192,7 +192,7 @@ class TasksProvider implements IProvider<Task> {
       task.goal,
       task.startDate?.millisecondsSinceEpoch,
       task.endDate?.millisecondsSinceEpoch,
-      task.subtaskCount,
+      task.subtasksCount,
       task.complitedSubaskCount,
       task.priority,
       task.isComplited ? 1 : 0,

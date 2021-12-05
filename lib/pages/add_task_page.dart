@@ -257,7 +257,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         // Update subtasksCount for selected task
         final updatedSelectedTask = selectedTaskCubit.state.copyWith(
           isComplited: false,
-          subtaskCount: selectedTaskCubit.state.subtaskCount + 1
+          subtaskCount: selectedTaskCubit.state.subtasksCount + 1
         );
         await context.read<TasksCubit>().update(
           updatedSelectedTask,

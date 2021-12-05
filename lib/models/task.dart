@@ -38,7 +38,7 @@ class Task extends Equatable{
   /// |`Low`|0|
   final int status;
   /// Subtask count for the task
-  final int subtaskCount;
+  final int subtasksCount;
   /// Complited subtask count for the task
   final int complitedSubaskCount;
   final bool isComplited;
@@ -53,7 +53,7 @@ class Task extends Equatable{
     this.endDate,
     this.priority = 0,
     this.status = 0,
-    this.subtaskCount = 0,
+    this.subtasksCount = 0,
     this.complitedSubaskCount = 0,
     this.isComplited = false,
   });
@@ -86,7 +86,7 @@ class Task extends Equatable{
     : null,
   priority = map[TasksTableField.priority],
   status = 0,
-  subtaskCount = map[TasksTableField.subtaskCount],
+  subtasksCount = map[TasksTableField.subtaskCount],
   complitedSubaskCount = map[TasksTableField.complitedSubaskCount],
   isComplited = map[TasksTableField.isComplited] != 0 ? true : false;
 
@@ -95,7 +95,7 @@ class Task extends Equatable{
   name = '',
   goal = '',
   isComplited = false,
-  subtaskCount = 0,
+  subtasksCount = 0,
   complitedSubaskCount = 0,
   startDate = null,
   endDate = null,
@@ -115,7 +115,7 @@ class Task extends Equatable{
     TasksTableField.startDate            : startDate?.millisecondsSinceEpoch ,
     TasksTableField.endDate              : endDate?.millisecondsSinceEpoch,
     TasksTableField.priority             : priority,
-    TasksTableField.subtaskCount         : subtaskCount,
+    TasksTableField.subtaskCount         : subtasksCount,
     TasksTableField.complitedSubaskCount : complitedSubaskCount,
     TasksTableField.isComplited          : isComplited ? 1 : 0
   };
@@ -143,7 +143,7 @@ class Task extends Equatable{
     startDate: startDate ?? this.startDate,
     endDate: endDate ?? this.endDate,
     priority: priority ?? this.priority,
-    subtaskCount: subtaskCount ?? this.subtaskCount,
+    subtasksCount: subtaskCount ?? this.subtasksCount,
     complitedSubaskCount: complitedSubaskCount ?? this.complitedSubaskCount,
     status: status ?? this.status,
     isComplited: isComplited ?? this.isComplited
@@ -160,7 +160,7 @@ class Task extends Equatable{
     'startDate: $startDate, '
     'endDate: $endDate, '
     'priority: $priority, '
-    'subtaskCount: $subtaskCount, '
+    'subtaskCount: $subtasksCount, '
     'complitedSubaskCount: $complitedSubaskCount, '
     'status: $status, '
     'isComplited: $isComplited '
@@ -177,7 +177,7 @@ class Task extends Equatable{
     startDate, 
     endDate, 
     priority, 
-    subtaskCount,
+    subtasksCount,
     complitedSubaskCount,
     status, 
     isComplited, 

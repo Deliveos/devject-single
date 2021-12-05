@@ -15,11 +15,13 @@ import 'package:devject_single/providers/tasks_provider.dart';
 import 'package:devject_single/utils/screen_size.dart';
 import 'package:devject_single/widgets/appbar.dart';
 import 'package:devject_single/widgets/task_container.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import 'add_task_page.dart';
 
@@ -276,41 +278,10 @@ class TaskPage extends StatelessWidget {
                               );
                               // Load updated projects
                               await context.read<ProjectsCubit>().load();
-                              // final complidedTask = selectedTaskCubit.state.copyWith(
-                              //   isComplited: value,
-                              //   status: value!
-                              //     ? Status.completed.index
-                              //     : null
-                              // );
-                              // if (!value) {
-                              //   if (selectedTaskCubit.state.parentId != null) {
-                              //     final parent = await TasksProvider.instance.getOne(
-                              //       selectedTaskCubit.state.parentId!
-                              //     );
-                              //     await context.read<TasksCubit>().update(
-                              //       parent.copyWith(
-                              //         complitedSubaskCount: parent.complitedSubaskCount - 1
-                              //       )
-                              //     );
-                              //     selectedTaskCubit.select(complidedTask);
-                              //     await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
-                              //       await TasksProvider.instance.getOne(selectedTaskCubit.state.parentId!)
-                              //     );
-                              //   } else {
-                              //     await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
-                              //       context.read<SelectedProjectCubit>().state!.id!
-                              //     );
-                              //   }
-                              // }
-                              // await context.read<TasksCubit>().update(complidedTask);
-                              // await context.read<TasksCubit>().load(
-                              //   context.read<SelectedProjectCubit>().state!.id!,
-                              //   parentId: selectedTaskCubit.state.id!
-                              // );
                             },
                           )
                         else SizedBox(
-                          height: ScreenSize.height(context, 5),
+                          height: ScreenSize.height(context, 6),
                         )
                       ],
                     ),
@@ -383,127 +354,201 @@ class TaskPage extends StatelessWidget {
                               ),
                             )
                           ]
-                          // Text(
-                          //   "In Process",
-                          //   style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          //     color: kInProcessColor,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ],
                   ),
-                  
                 ],
               ),
-              
             ],
           ),
         ),
-        Row(
-          children: [
-            Container(
-              margin: EdgeInsets.only(
-                left: ScreenSize.width(context, 5),
-                right: ScreenSize.width(context, 5),
-                top: ScreenSize.width(context, 2.5),
-                bottom: ScreenSize.width(context, 5)
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: ScreenSize.width(context, 5)
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(20)
-                )
-              ),
-              /*
-              * DATES
-              */
-              child: Container(
-                padding: EdgeInsets.all(
-                  ScreenSize.width(context, 5)
-                ),
-                child: Column(
+        /*
+         *  DATES 
+         */
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: ScreenSize.width(context, 5),
+            vertical: ScreenSize.width(context, 2.5),
+          ),
+          padding: EdgeInsets.all(
+            ScreenSize.width(context, 3)
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20)
+            )
+          ),
+          child: Container(
+            padding: EdgeInsets.all(
+              ScreenSize.width(context, 5)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
                   children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
+                    if (selectedTaskCubit.state.startDate != null)
+                      Row(
+                        children: <Widget>[
+                          const Icon(
+                            FluentIcons.calendar_ltr_20_regular
+                          ),
+                          Text(
+                            dateFormat.format(selectedTaskCubit.state.startDate!),
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ],
+                      )
+                    else
+                      InkWell(
+                        onTap: () {
+                          // TODO: add handler
+                        },
+                        child: Row(
                           children: <Widget>[
-                            if (selectedTaskCubit.state.startDate != null)
-                              Row(
-                                children: <Widget>[
-                                  const Icon(
-                                    FluentIcons.calendar_ltr_20_regular
-                                  ),
-                                  Text(
-                                    dateFormat.format(selectedTaskCubit.state.startDate!),
-                                    style: Theme.of(context).textTheme.bodyText1,
-                                  ),
-                                ],
-                              )
-                            else
-                              InkWell(
-                                onTap: () {
-                                  // TODO: add handler
-                                },
-                                child: Row(
-                                  children: <Widget>[
-                                    const Icon(
-                                      FluentIcons.calendar_add_20_regular
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.startDate,
-                                      style: Theme.of(context).textTheme.bodyText2,
-                                    ),
-                                  ],
-                                ),
-                              )
+                            const Icon(
+                              FluentIcons.calendar_add_20_regular
+                            ),
+                            Text(
+                              AppLocalizations.of(context)!.startDate,
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
                           ],
                         ),
-                        const Icon(
-                          FluentIcons.arrow_down_20_regular
-                        ),
-                        Row(
-                          children: <Widget>[
-                            if (selectedTaskCubit.state.endDate != null)
-                              Row(
-                                children: <Widget>[
-                                  const Icon(
-                                    FluentIcons.calendar_ltr_20_regular
-                                  ),
-                                  Text(
-                                    dateFormat.format(selectedTaskCubit.state.endDate!),
-                                    style: Theme.of(context).textTheme.bodyText1, 
-                                  ),
-                                ],
-                              )
-                            else
-                              InkWell(
-                                onTap: () {
-                                  // TODO: add handler
-                                },
-                                child: Row(
-                                  children: <Widget>[
-                                    const Icon(FluentIcons.calendar_add_20_regular),
-                                    Text(
-                                      AppLocalizations.of(context)!.endDate,
-                                      style: Theme.of(context).textTheme.bodyText2
-                                    ),
-                                  ],
-                                ),
-                              )
-                          ],
-                        )
-                      ],
-                    )
+                      )
                   ],
                 ),
-              ),
+                Row(
+                  children: <Widget>[
+                    if (selectedTaskCubit.state.endDate != null)
+                      Row(
+                        children: <Widget>[
+                          const Icon(
+                            FluentIcons.calendar_ltr_20_regular
+                          ),
+                          Text(
+                            dateFormat.format(selectedTaskCubit.state.endDate!),
+                            style: Theme.of(context).textTheme.bodyText1, 
+                          ),
+                        ],
+                      )
+                    else
+                      InkWell(
+                        onTap: () {
+                          // TODO: add handler
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            const Icon(FluentIcons.calendar_add_20_regular),
+                            Text(
+                              AppLocalizations.of(context)!.endDate,
+                              style: Theme.of(context).textTheme.bodyText2
+                            ),
+                          ],
+                        ),
+                      )
+                  ],
+                )
+              ],
             ),
-          ],
+          ),
+        ),
+        if (
+          selectedTaskCubit.state.subtasksCount == 0 &&
+          selectedTaskCubit.state.goal == null
+        )
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: ScreenSize.width(context, 5),
+            vertical: ScreenSize.width(context, 2.5),
+          ),
+          padding: EdgeInsets.all(
+            ScreenSize.width(context, 3)
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20)
+            )
+          ),
+          child: Container(
+            padding: EdgeInsets.all(
+              ScreenSize.width(context, 5)
+            ),
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              /*
+              * PROGRESS 
+              */
+              if (selectedTaskCubit.state.subtasksCount != 0)
+              CircularPercentIndicator(
+                radius: ScreenSize.width(context, 20),
+                lineWidth: 12,
+                backgroundColor: Theme.of(context).textTheme.bodyText2!.color!,
+                progressColor: Theme.of(context).primaryColor,
+                circularStrokeCap: CircularStrokeCap.round,
+                animation: true,
+                center: RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: selectedTaskCubit.state.complitedSubaskCount.toString() + '/',
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).primaryColor
+                        )
+                      ),
+                      TextSpan(
+                        text: selectedTaskCubit.state.subtasksCount.toString(),
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).textTheme.bodyText2!.color
+                        )
+                      )
+                    ]
+                  ),
+                ),
+                percent: selectedTaskCubit.state.subtasksCount != 0 
+                  ? selectedTaskCubit.state.complitedSubaskCount 
+                    / selectedTaskCubit.state.subtasksCount
+                  : 0,
+              ),
+              if (
+                selectedTaskCubit.state.subtasksCount != 0 &&
+                selectedTaskCubit.state.goal != null && 
+                selectedTaskCubit.state.goal!.isNotEmpty
+              )
+              SizedBox(
+                height: ScreenSize.height(context, 2),
+              ),
+              /*
+              * GOAL 
+              */
+              if (
+                selectedTaskCubit.state.goal != null && 
+                selectedTaskCubit.state.goal!.isNotEmpty
+              )
+              Align(
+                alignment: Alignment.topLeft,
+                child: ExpandableText(
+                  selectedTaskCubit.state.goal!,
+                  expandText: '',
+                  maxLines: 1,
+                  expandOnTextTap: true,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontStyle: FontStyle.italic
+                  ),
+                  prefixText: AppLocalizations.of(context)!.goal + ": ",
+                  prefixStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontStyle: FontStyle.normal
+                  ),
+                  collapseOnTextTap: true,
+                ),
+              )
+            ],
+              ),
+          ),
         ),
         Expanded(
           child: Container(
@@ -517,7 +562,6 @@ class TaskPage extends StatelessWidget {
                 topRight: Radius.circular(20)
               ),
             ),
-            // height: ScreenSize.height(context, 40),
             width: ScreenSize.width(context, 100),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -533,31 +577,35 @@ class TaskPage extends StatelessWidget {
                             AppLocalizations.of(context)!.subtasks,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(kBorderRadius)
-                              ),
-                              border: Border.all(
-                                color: Theme.of(context).backgroundColor,
-                                width: kBorderWidth
-                              )
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => BlocProvider.value(
-                                      value: BlocProvider.of<SelectedProjectCubit>(context),
-                                      child: const AddTaskPage(),
-                                    )
-                                  )
-                                );
-                              }, 
-                              icon: const Icon(FluentIcons.add_24_regular)
-                            ),
+                          if (
+                            !selectedTaskCubit.state.isComplited &&
+                            selectedTaskCubit.state.subtasksCount == 0
                           )
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(kBorderRadius)
+                                ),
+                                border: Border.all(
+                                  color: Theme.of(context).backgroundColor,
+                                  width: kBorderWidth
+                                )
+                              ),
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider.value(
+                                        value: BlocProvider.of<SelectedProjectCubit>(context),
+                                        child: const AddTaskPage(),
+                                      )
+                                    )
+                                  );
+                                }, 
+                                icon: const Icon(FluentIcons.add_24_regular)
+                              ),
+                            )
                         ],
                       )
                     ] 
