@@ -249,10 +249,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
             tasksCount: selectedProjectCubit.state!.tasksCount + 1
           )
         );
-        // // update
-        // await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
-        //   selectedTaskCubit.state
-        // );
       } else {
         // Update subtasksCount for selected task
         final updatedSelectedTask = selectedTaskCubit.state.copyWith(
@@ -266,9 +262,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
         selectedTaskCubit.select(
           updatedSelectedTask
         );
-        // await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
-        //   selectedProjectCubit.state!.id!
-        // );
       }
       await context.read<TasksCubit>().load(
         selectedProjectCubit.state!.id!,

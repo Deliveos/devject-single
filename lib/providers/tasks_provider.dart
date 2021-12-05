@@ -24,9 +24,10 @@ class TasksProvider implements IProvider<Task> {
           ${TasksTableField.projectId}, 
           ${TasksTableField.parentId},
           ${TasksTableField.startDate}, 
-          ${TasksTableField.endDate}
+          ${TasksTableField.endDate},
+          ${TasksTableField.priority}
         )
-        VALUES(?, ?, ?, ?, ?, ?)
+        VALUES(?, ?, ?, ?, ?, ?, ?)
       ''', 
       [
         task.name, 
@@ -35,6 +36,7 @@ class TasksProvider implements IProvider<Task> {
         task.parentId,
         task.startDate?.millisecondsSinceEpoch, 
         task.endDate?.millisecondsSinceEpoch,
+        task.priority
       ]
     );
   }

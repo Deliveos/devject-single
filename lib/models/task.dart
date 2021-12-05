@@ -26,7 +26,7 @@ class Task extends Equatable{
   /// |`Waiting`|1|
   /// |`In process`|2|
   /// |`Done`|3|
-  final int priority;
+  final int status;
   /// Status of the task.
   /// 
   /// Can be:
@@ -36,7 +36,7 @@ class Task extends Equatable{
   /// |`High`|2|
   /// |`Medium`|1|
   /// |`Low`|0|
-  final int status;
+  final int priority;
   /// Subtask count for the task
   final int subtasksCount;
   /// Complited subtask count for the task
