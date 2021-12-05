@@ -138,20 +138,20 @@ class TaskContainer extends StatelessWidget {
                         );
                       }
                     }
-                    // Reculculate comlited task
-                      if (task.parentId != null) {
-                        await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
-                          await tasksProvider.getOne(task.parentId!)
-                        );
-                        // Update selected task state
-                        slcdTskCubit.select(
-                          await tasksProvider.getOne(task.parentId!)
-                        );
-                      } else {
-                        await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
-                          slcdPrjctCubit.state!.id!
-                        );
-                      }
+                    // Reculculate complited task
+                    if (task.parentId != null) {
+                      await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
+                        await tasksProvider.getOne(task.parentId!)
+                      );
+                      // Update selected task state
+                      slcdTskCubit.select(
+                        await tasksProvider.getOne(task.parentId!)
+                      );
+                    } else {
+                      await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
+                        slcdPrjctCubit.state!.id!
+                      );
+                    }
                       
                       // Load updated tasks
                       await context.read<TasksCubit>().load(

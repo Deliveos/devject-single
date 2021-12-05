@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/constants/sizes.dart';
+import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/selected_task_cubit.dart';
 import 'package:devject_single/cubit/settings_cubit.dart';
@@ -160,63 +161,157 @@ class TaskPage extends StatelessWidget {
                     ),
                     child: Column(
                       children: <Widget>[
-                        // if (
-                        //   context.read<TasksCubit>().state.isEmpty &&
-                        //   (
-                        //     selectedTaskCubit.state.status == Status.inProcess.index ||
-                        //     selectedTaskCubit.state.status == Status.completed.index ||
-                        //     selectedTaskCubit.state.status == Status.expired.index
-                        //   )
-                        // )
-                        //   Checkbox(
-                        //     shape: CircleBorder(
-                        //       side: BorderSide(
-                        //         color: Theme.of(context).textTheme.bodyText2!.color!,
-                        //         width: 2
-                        //       )
-                        //     ),
-                        //     checkColor: Theme.of(context).primaryColor,
-                        //     activeColor: Theme.of(context).primaryColor,
-                        //     splashRadius: 0,
-                        //     visualDensity: VisualDensity.compact,
-                        //     value: selectedTaskCubit.state.isComplited,
-                        //     onChanged: (bool? value) async {
-                        //       final complidedTask = selectedTaskCubit.state.copyWith(
-                        //         isComplited: value,
-                        //         status: value!
-                        //           ? Status.completed.index
-                        //           : null
-                        //       );
-                        //       if (!value) {
-                        //         if (selectedTaskCubit.state.parentId != null) {
-                        //           final parent = await TasksProvider.instance.getOne(
-                        //             selectedTaskCubit.state.parentId!
-                        //           );
-                        //           await context.read<TasksCubit>().update(
-                        //             parent.copyWith(
-                        //               complitedSubaskCount: parent.complitedSubaskCount - 1
-                        //             )
-                        //           );
-                        //           selectedTaskCubit.select(complidedTask);
-                        //           await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
-                        //             await TasksProvider.instance.getOne(selectedTaskCubit.state.parentId!)
-                        //           );
-                        //         } else {
-                        //           await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
-                        //             context.read<SelectedProjectCubit>().state!.id!
-                        //           );
-                        //         }
-                        //       }
-                        //       await context.read<TasksCubit>().update(complidedTask);
-                        //       await context.read<TasksCubit>().load(
-                        //         context.read<SelectedProjectCubit>().state!.id!,
-                        //         parentId: selectedTaskCubit.state.id!
-                        //       );
-                        //     },
-                        //   )
-                        // else SizedBox(
-                        //   height: ScreenSize.height(context, 5),
-                        // )
+                        if (
+                          context.read<TasksCubit>().state.isEmpty &&
+                          (
+                            selectedTaskCubit.state.status == Status.inProcess.index ||
+                            selectedTaskCubit.state.status == Status.completed.index ||
+                            selectedTaskCubit.state.status == Status.expired.index
+                          )
+                        )
+                          Checkbox(
+                            shape: CircleBorder(
+                              side: BorderSide(
+                                color: Theme.of(context).textTheme.bodyText2!.color!,
+                                width: 2
+                              )
+                            ),
+                            checkColor: Theme.of(context).primaryColor,
+                            activeColor: Theme.of(context).primaryColor,
+                            splashRadius: 0,
+                            visualDensity: VisualDensity.compact,
+                            value: selectedTaskCubit.state.isComplited,
+                            onChanged: (bool? value) async {
+                              final tasksProvider = TasksProvider.instance;
+                              final projectsCubit = context.read<ProjectsCubit>();
+                              final slcdPrjctCubit = context.read<SelectedProjectCubit>();
+                              if (value!) {
+                                // Update selected task
+                                await tasksProvider.update(
+                                  selectedTaskCubit.state.copyWith(
+                                    isComplited: value,
+                                    status: Status.completed.index
+                                  )
+                                );
+                                selectedTaskCubit.select(
+                                  selectedTaskCubit.state.copyWith(
+                                    isComplited: value,
+                                    status: Status.completed.index
+                                  )
+                                );
+                                // Update parent task if exists, else update project
+                                if (selectedTaskCubit.state.parentId != null) {
+                                  await tasksProvider.update(
+                                    selectedTaskCubit.state.copyWith(
+                                      complitedSubaskCount: selectedTaskCubit.state.complitedSubaskCount + 1
+                                    )
+                                  );
+                                } else {
+                                  projectsCubit.update(
+                                    slcdPrjctCubit.state!.copyWith(
+                                      complitedTaskCount: slcdPrjctCubit.state!.complitedTaskCount + 1
+                                    )
+                                  );
+                                }
+                              } else {
+                                int status = 0;
+                                if (
+                                  selectedTaskCubit.state.endDate == null ||
+                                  (
+                                    DateTime.now().isAfter(selectedTaskCubit.state.startDate!) &&
+                                    DateTime.now().isBefore(selectedTaskCubit.state.endDate!)
+                                  )
+                                ) {
+                                  status = Status.inProcess.index;
+                                } else {
+                                  status = Status.expired.index;
+                                }
+                                // Update seleted task
+                                await tasksProvider.update(
+                                  selectedTaskCubit.state.copyWith(
+                                    isComplited: value,
+                                    status: status
+                                  )
+                                );
+                                selectedTaskCubit.select(
+                                  selectedTaskCubit.state.copyWith(
+                                    isComplited: value,
+                                    status: status
+                                  )
+                                );
+                                // Update parent task if exists, else update project
+                                if (selectedTaskCubit.state.parentId != null) {
+                                  await tasksProvider.update(
+                                    selectedTaskCubit.state.copyWith(
+                                      complitedSubaskCount: selectedTaskCubit.state.complitedSubaskCount - 1
+                                    )
+                                  );
+                                } else {
+                                  projectsCubit.update(
+                                    slcdPrjctCubit.state!.copyWith(
+                                      complitedTaskCount: slcdPrjctCubit.state!.complitedTaskCount - 1
+                                    )
+                                  );
+                                }
+                              }
+                              // Reculculate complited task
+                              if (selectedTaskCubit.state.parentId != null) {
+                                await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
+                                  await tasksProvider.getOne(selectedTaskCubit.state.parentId!)
+                                );
+                                // Update selected task state
+                                selectedTaskCubit.select(
+                                  await tasksProvider.getOne(selectedTaskCubit.state.id!)
+                                );
+                              } else {
+                                await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
+                                  slcdPrjctCubit.state!.id!
+                                );
+                              }
+                              // Load selected project
+                              slcdPrjctCubit.select(
+                                await ProjectsProvider.instance.getOne(
+                                  slcdPrjctCubit.state!.id!
+                                )
+                              );
+                              // Load updated projects
+                              await context.read<ProjectsCubit>().load();
+                              // final complidedTask = selectedTaskCubit.state.copyWith(
+                              //   isComplited: value,
+                              //   status: value!
+                              //     ? Status.completed.index
+                              //     : null
+                              // );
+                              // if (!value) {
+                              //   if (selectedTaskCubit.state.parentId != null) {
+                              //     final parent = await TasksProvider.instance.getOne(
+                              //       selectedTaskCubit.state.parentId!
+                              //     );
+                              //     await context.read<TasksCubit>().update(
+                              //       parent.copyWith(
+                              //         complitedSubaskCount: parent.complitedSubaskCount - 1
+                              //       )
+                              //     );
+                              //     selectedTaskCubit.select(complidedTask);
+                              //     await TasksProvider.instance.recalculateComplitedSubtasksCountFor(
+                              //       await TasksProvider.instance.getOne(selectedTaskCubit.state.parentId!)
+                              //     );
+                              //   } else {
+                              //     await ProjectsProvider.instance.recalculateComplitedTasksCountFor(
+                              //       context.read<SelectedProjectCubit>().state!.id!
+                              //     );
+                              //   }
+                              // }
+                              // await context.read<TasksCubit>().update(complidedTask);
+                              // await context.read<TasksCubit>().load(
+                              //   context.read<SelectedProjectCubit>().state!.id!,
+                              //   parentId: selectedTaskCubit.state.id!
+                              // );
+                            },
+                          )
+                        else SizedBox(
+                          height: ScreenSize.height(context, 5),
+                        )
                       ],
                     ),
                   ),
