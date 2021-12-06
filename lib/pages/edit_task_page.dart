@@ -36,8 +36,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
   final InputTextEditingController _descriptionController = InputTextEditingController();
   final InputTextEditingController _startDateController = InputTextEditingController();
   final InputTextEditingController _endDateController = InputTextEditingController();
-  final DateFormat dateFormat = DateFormat.yMMMMd(Platform.localeName);
+  final DateFormat dateFormat = DateFormat.yMMMd(Platform.localeName);
   DateTimeRange? dateTimeRange;
+  int selectedPriority = 0;
 
   @override
   void initState() {
@@ -145,26 +146,95 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           height: ScreenSize.height(context, 3),
                         ),
                         /*
+                        * PRIORITY 
+                        */
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Radio(
+                                  activeColor: kLowPriorityColor,
+                                  visualDensity: VisualDensity.compact,
+                                  value: 0, 
+                                  groupValue: selectedPriority, 
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      selectedPriority = value!;
+                                    });
+                                  }
+                                ),
+                                const Icon(
+                                  FluentIcons.flag_24_filled,
+                                  color: kLowPriorityColor,
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Radio(
+                                  activeColor: kMediumPriorityColor,
+                                  visualDensity: VisualDensity.compact,
+                                  value: 1, 
+                                  groupValue: selectedPriority, 
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      selectedPriority = value!;
+                                    });
+                                  }
+                                ),
+                                const Icon(
+                                  FluentIcons.flag_24_filled,
+                                  color: kMediumPriorityColor,
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Radio(
+                                  activeColor: kHighPriorityColor,
+                                  visualDensity: VisualDensity.compact,
+                                  value: 2, 
+                                  groupValue: selectedPriority, 
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      selectedPriority = value!;
+                                    });
+                                  }
+                                ),
+                                const Icon(
+                                  FluentIcons.flag_24_filled,
+                                  color: kHighPriorityColor,
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: ScreenSize.height(context, 2),
+                        ),
+                        /*
                         * DATES FIELDS
                         */
                         Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                               InputField(
-                                  readOnly: true,
-                                  width: ScreenSize.width(context, 35),
-                                  controller: _startDateController,
-                                  hintText: AppLocalizations.of(context)!
-                                      .startDate,
-                                  onTap: () async {
-                                    await pickDateRangeForTask(context);
-                                  }),
+                                readOnly: true,
+                                width: ScreenSize.width(context, 35),
+                                controller: _startDateController,
+                                hintText: AppLocalizations.of(context)!
+                                    .startDate,
+                                onTap: () async {
+                                  await pickDateRangeForTask(context);
+                                }
+                              ),
                               Text("-",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1),
+                                style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                              ),
                               InputField(
                                 readOnly: true,
                                 width: ScreenSize.width(context, 35),
@@ -180,7 +250,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           height: ScreenSize.height(context, 3),
                         ),
                         /*
-                        * CREATE NEW PROJECT BUTTON
+                        * SAVE TASK BUTTON
                         */
                         PrimaryButton(
                           onTap: () async {
@@ -193,6 +263,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                 : null,
                                 startDate: dateTimeRange?.start,
                                 endDate: dateTimeRange?.end,
+                                priority: selectedPriority,
                                 projectId: widget.task.projectId,
                                 parentId: widget.task.parentId
                               );
@@ -314,6 +385,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
               ]
             )
           ),
+          /*
+          * TASK NAME 
+          */
           InputField(
             controller: _controller,
             hintText: AppLocalizations.of(context)!.taskName,
