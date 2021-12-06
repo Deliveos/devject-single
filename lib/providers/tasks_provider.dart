@@ -104,7 +104,8 @@ class TasksProvider implements IProvider<Task> {
         (
           DateTime.now().isAfter(tasks[i].startDate!) &&
           DateTime.now().isBefore(tasks[i].endDate!)
-        )
+        ) ||
+        DateTime.now() == tasks[i].startDate!
       ) {
         tasks[i] = tasks[i].copyWith(
           status: Status.inProcess.index
@@ -163,6 +164,84 @@ class TasksProvider implements IProvider<Task> {
       );
     }
     return task;
+  }
+
+  Future<List<Task>> getCurrentTask() async {
+    final db = await _provider.database;
+    List<Task> tasks;
+    tasks = (await db.rawQuery(
+      '''
+        SELECT * FROM $tableName 
+      ''', 
+      
+    )).map((map) => Task.fromMap(map)).toList();
+    for (int i = 0; i < tasks.length; i++) {
+      Project project = await ProjectsProvider.instance.getOne(
+        tasks[i].projectId
+      );
+      if (tasks[i].startDate == null) {
+        if (i > 0) {
+          tasks[i] = tasks[i].copyWith(
+            startDate: tasks[i-1].startDate ?? project.startDate
+          );
+        } else {
+          tasks[i] = tasks[i].copyWith(
+            startDate: project.startDate
+          );
+        }
+        if (i < tasks.length) {
+          if (tasks[i].endDate == null) {
+            if (i < tasks.length - 1) {
+              tasks[i] = tasks[i].copyWith(
+                endDate: tasks[i + 1].endDate 
+              );
+            }
+          }
+        }
+      }
+      if (tasks[i].isComplited) {
+        tasks[i] = tasks[i].copyWith(
+          status: Status.completed.index
+        );
+      } else if (
+        tasks[i].endDate == null ||
+        (
+          DateTime.now().isAfter(tasks[i].startDate!) &&
+          DateTime.now().isBefore(tasks[i].endDate!)
+        ) ||
+        DateTime.now() == tasks[i].startDate!
+      ) {
+        tasks[i] = tasks[i].copyWith(
+          status: Status.inProcess.index
+        );
+      } else if (DateTime.now().isBefore(tasks[i].endDate!)) {
+        tasks[i] = tasks[i].copyWith(
+          status: Status.locked.index
+        );
+      } else {
+        tasks[i] = tasks[i].copyWith(
+          status: Status.expired.index
+        );
+      }
+    }
+    tasks.removeWhere(
+      (task) => 
+      task.isComplited ||
+      task.subtasksCount != 0 ||
+      task.startDate!.isAfter(DateTime.now())
+    );
+    tasks.sort((a, b) {
+      if (a.startDate != null && b.startDate != null) {
+        return a.startDate!.isBefore(b.startDate!) ? 0 : 1;
+      } else {
+        if (a.startDate == null) {
+          return 0;
+        } else {
+          return 1;
+        }
+      }
+    });
+    return tasks;
   }
 
   @override

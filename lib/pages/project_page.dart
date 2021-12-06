@@ -1,3 +1,4 @@
+import 'package:devject_single/widgets/main_bottom_nav_bar.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,6 +57,7 @@ class ProjectPage extends StatelessWidget {
               ]
             ),
             body: buildBody(context),
+            bottomNavigationBar: const MainBottomNavBar(),
           ),
         );
       },

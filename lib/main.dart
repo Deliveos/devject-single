@@ -1,3 +1,4 @@
+import 'package:devject_single/cubit/curret_tasks_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/selected_task_cubit.dart';
 import 'package:devject_single/cubit/settings_cubit.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => CurretTasksCubit()),
         BlocProvider(create: (context) => TasksCubit()),
         BlocProvider(create: (context) => SelectedTaskCubit()),
         BlocProvider(create: (context) => ProjectsCubit()),

@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'package:devject_single/cubit/curret_tasks_cubit.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants/colors.dart';
 import '../constants/sizes.dart';
@@ -224,7 +225,8 @@ class TaskPage extends StatelessWidget {
                                   (
                                     DateTime.now().isAfter(selectedTaskCubit.state.startDate!) &&
                                     DateTime.now().isBefore(selectedTaskCubit.state.endDate!)
-                                  )
+                                  ) ||
+                                  DateTime.now() == selectedTaskCubit.state.startDate!
                                 ) {
                                   status = Status.inProcess.index;
                                 } else {
@@ -280,6 +282,8 @@ class TaskPage extends StatelessWidget {
                               );
                               // Load updated projects
                               await context.read<ProjectsCubit>().load();
+                              // Load updated current tasks
+                              await context.read<CurretTasksCubit>().load();
                             },
                           )
                         else SizedBox(
@@ -579,35 +583,31 @@ class TaskPage extends StatelessWidget {
                             AppLocalizations.of(context)!.subtasks,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
-                          if (
-                            !selectedTaskCubit.state.isComplited &&
-                            selectedTaskCubit.state.subtasksCount == 0
-                          )
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(kBorderRadius)
-                                ),
-                                border: Border.all(
-                                  color: Theme.of(context).backgroundColor,
-                                  width: kBorderWidth
-                                )
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(kBorderRadius)
                               ),
-                              child: IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context, 
-                                    MaterialPageRoute(
-                                      builder: (context) => BlocProvider.value(
-                                        value: BlocProvider.of<SelectedProjectCubit>(context),
-                                        child: const AddTaskPage(),
-                                      )
+                              border: Border.all(
+                                color: Theme.of(context).backgroundColor,
+                                width: kBorderWidth
+                              )
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context) => BlocProvider.value(
+                                      value: BlocProvider.of<SelectedProjectCubit>(context),
+                                      child: const AddTaskPage(),
                                     )
-                                  );
-                                }, 
-                                icon: const Icon(FluentIcons.add_24_regular)
-                              ),
-                            )
+                                  )
+                                );
+                              }, 
+                              icon: const Icon(FluentIcons.add_24_regular)
+                            ),
+                          )
                         ],
                       )
                     ] 

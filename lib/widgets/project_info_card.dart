@@ -133,7 +133,9 @@ class ProjectInfoCard extends StatelessWidget {
                 )
             ]
           ),
-          
+          /* 
+           * DESCRIPTION 
+          */
           if (project.description != null && project.description!.isNotEmpty)
           ...[
             SizedBox(
@@ -158,44 +160,47 @@ class ProjectInfoCard extends StatelessWidget {
               ),
             ),
           ],
-          const Divider(),
-          SizedBox(
-            height: ScreenSize.height(context, 1)
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircularPercentIndicator(
-                radius: 150,
-                lineWidth: 12,
-                backgroundColor: Theme.of(context).textTheme.bodyText2!.color!,
-                progressColor: Theme.of(context).primaryColor,
-                circularStrokeCap: CircularStrokeCap.round,
-                animation: true,
-                center: RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: project.complitedTaskCount.toString() + '/',
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).primaryColor
+          if (project.tasksCount != 0)
+          ...[
+            const Divider(),
+            SizedBox(
+              height: ScreenSize.height(context, 1)
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularPercentIndicator(
+                  radius: 150,
+                  lineWidth: 12,
+                  backgroundColor: Theme.of(context).textTheme.bodyText2!.color!,
+                  progressColor: Theme.of(context).primaryColor,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  animation: true,
+                  center: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: project.complitedTaskCount.toString() + '/',
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).primaryColor
+                          )
+                        ),
+                        TextSpan(
+                          text: project.tasksCount.toString(),
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).textTheme.bodyText2!.color
+                          )
                         )
-                      ),
-                      TextSpan(
-                        text: project.tasksCount.toString(),
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).textTheme.bodyText2!.color
-                        )
-                      )
-                    ]
+                      ]
+                    ),
                   ),
-                ),
-                percent: project.tasksCount != 0 
-                  ? project.complitedTaskCount / project.tasksCount
-                  : 0,
-              )
-            ],
-          )
+                  percent: project.tasksCount != 0 
+                    ? project.complitedTaskCount / project.tasksCount
+                    : 0,
+                )
+              ],
+            )
+          ]
         ]
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:devject_single/constants/colors.dart';
 import 'package:devject_single/constants/sizes.dart';
+import 'package:devject_single/cubit/curret_tasks_cubit.dart';
 import 'package:devject_single/cubit/projects_cubit.dart';
 import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:devject_single/cubit/selected_task_cubit.dart';
@@ -110,7 +111,8 @@ class TaskContainer extends StatelessWidget {
                         (
                           DateTime.now().isAfter(task.startDate!) &&
                           DateTime.now().isBefore(task.endDate!)
-                        )
+                        ) ||
+                        DateTime.now() == task.startDate!
                       ) {
                         status = Status.inProcess.index;
                       } else {
@@ -166,6 +168,8 @@ class TaskContainer extends StatelessWidget {
                     );
                     // Load updated projects
                     await context.read<ProjectsCubit>().load();
+                    // Load updated current tasks
+                    await context.read<CurretTasksCubit>().load();
                   },
                 ),
               /*
@@ -192,7 +196,17 @@ class TaskContainer extends StatelessWidget {
                       )
                     );
                   },
-                  child: Text(
+                  child: task.isComplited 
+                  ? Text(
+                    task.name,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      decoration: TextDecoration.lineThrough
+                    )
+                  )
+                  : Text(
                     task.name,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
