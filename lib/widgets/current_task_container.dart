@@ -156,6 +156,7 @@ class CurrentTaskContainer extends StatelessWidget {
                       task.projectId, 
                       id: task.id
                     );
+                    context.read<SelectedTaskCubit>().select(task);
                     Navigator.push(
                       context, 
                       MaterialPageRoute(
@@ -178,7 +179,9 @@ class CurrentTaskContainer extends StatelessWidget {
                   ),
                 ),
               ),
-              // Flag
+              /*
+              * PRIORYTY FLAG 
+              */
               Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
