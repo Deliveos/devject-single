@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:devject_single/cubit/selected_project_cubit.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -157,6 +158,9 @@ class CurrentTaskContainer extends StatelessWidget {
                       id: task.id
                     );
                     context.read<SelectedTaskCubit>().select(task);
+                    context.read<SelectedProjectCubit>().select(
+                      await ProjectsProvider.instance.getOne(task.projectId)
+                    );
                     Navigator.push(
                       context, 
                       MaterialPageRoute(
