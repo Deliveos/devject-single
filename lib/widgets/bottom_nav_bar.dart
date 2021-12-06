@@ -16,11 +16,14 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Padding(
-        padding: EdgeInsets.all(ScreenSize.width(context, 5)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: items,
+      child: Container(
+        color: Theme.of(context).backgroundColor,
+        child: Padding(
+          padding: EdgeInsets.all(ScreenSize.width(context, 5)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items,
+          ),
         ),
       ),
     );

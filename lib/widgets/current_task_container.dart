@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -219,25 +220,30 @@ class CurrentTaskContainer extends StatelessWidget {
               )
             ]
           ),
+          /*
+          * GOAL 
+          */
           if (task.goal != null && task.goal!.isNotEmpty)
           ...[
             SizedBox(
               height: ScreenSize.height(context, 1),
             ),
-            Row(
-              children: <Widget>[
-                Text(
-                  AppLocalizations.of(context)!.goal,
-                  style: Theme.of(context).textTheme.bodyText2
+            Align(
+              alignment: Alignment.topLeft,
+              child: ExpandableText(
+                task.goal!,
+                expandText: '',
+                maxLines: 1,
+                expandOnTextTap: true,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  fontStyle: FontStyle.italic
                 ),
-                SizedBox(
-                  width: ScreenSize.width(context, 1),
+                prefixText: AppLocalizations.of(context)!.goal + ": ",
+                prefixStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
+                  fontStyle: FontStyle.normal
                 ),
-                Text(
-                  task.goal!,
-                  style: Theme.of(context).textTheme.bodyText1
-                )
-              ]
+                collapseOnTextTap: true,
+              ),
             ),
           ],
           SizedBox(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../constants/sizes.dart';
 import '../cubit/settings_cubit.dart';
 import '../models/settings.dart';
 import '../utils/screen_size.dart';
@@ -21,32 +20,36 @@ class SettingsPage extends StatelessWidget {
     return BlocBuilder<SettingsCubit, Settings>(
       builder: (context, settingsState) {
         return Scaffold(
-          extendBodyBehindAppBar: true,
           appBar: buildAppBar(
             context,
             title: AppLocalizations.of(context)!.settings,
           ),
-          body: Column(
+          body: ListView(
             children: <Widget>[
-              SizedBox(height: kAppBarHeight + ScreenSize.height(context, 3)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.darkTheme,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  Switch(
-                    value: settingsState.isDarkTheme??  false, 
-                    onChanged: (value) async {
-                      await BlocProvider.of<SettingsCubit>(context).update(
-                        settingsState.copyWith(
-                          isDarkTheme: value
-                        )
-                      );                          
-                    }
-                  )
-                ]
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ScreenSize.width(context, 5)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.darkTheme,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    Switch(
+                      activeColor: Theme.of(context).primaryColor,
+                      value: settingsState.isDarkTheme??  false, 
+                      onChanged: (value) async {
+                        await BlocProvider.of<SettingsCubit>(context).update(
+                          settingsState.copyWith(
+                            isDarkTheme: value
+                          )
+                        );                          
+                      }
+                    )
+                  ]
+                ),
               )
             ]
           ),

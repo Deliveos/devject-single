@@ -98,7 +98,10 @@ class _InputFieldState extends State<InputField> {
               ),
               border: InputBorder.none,
               hintText: widget.hintText,
-              hintStyle: Theme.of(context).textTheme.bodyText2,
+              hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.8),
+                fontWeight: FontWeight.w300
+              ),
               suffixIcon: widget.suffixIcon
             )
           )

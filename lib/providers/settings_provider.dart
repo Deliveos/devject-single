@@ -8,13 +8,17 @@ class SettingProvider implements IProvider<Settings> {
   static final SettingProvider instance = SettingProvider._privateConstructor();
   static final DatabaseProvider _provider = DatabaseProvider.instance;
 
+  static const tableName = 'settings';
+
   @override
   Future<int> add(Settings settings) async {
     final db = await _provider.database;
     return await db.rawInsert(
       '''
-      INSERT INTO settings(is_dark_theme)
-      VALUE(?)
+      INSERT INTO ${SettingProvider.tableName}(
+        ${SettigsTableField.isDarkTheme}
+      )
+      VALUES(?)
       ''',
       [settings.isDarkTheme]
     );
@@ -25,7 +29,7 @@ class SettingProvider implements IProvider<Settings> {
     final db = await _provider.database;
     return (await db.rawQuery(
       '''
-      SELECT * FROM settings
+      SELECT * FROM ${SettingProvider.tableName}
       '''
     )).map((map) => Settings.fromMap(map)).toList();
   }
@@ -35,7 +39,7 @@ class SettingProvider implements IProvider<Settings> {
     final db = await _provider.database;
     final map = await db.rawQuery(
       '''
-      SELECT * FROM settings
+      SELECT * FROM ${SettingProvider.tableName}
       '''
     );
     return Settings.fromMap(map.first);
@@ -46,8 +50,8 @@ class SettingProvider implements IProvider<Settings> {
     final db = await _provider.database;
     return await db.rawUpdate(
       '''
-      UPDATE settings
-      SET is_checkbox=0
+      UPDATE ${SettingProvider.tableName}
+      SET ${SettigsTableField.isDarkTheme}=0
       '''
     );
   }
@@ -57,12 +61,17 @@ class SettingProvider implements IProvider<Settings> {
     final db = await _provider.database;
     return await db.rawUpdate(
       '''
-      UPDATE settings
-      SET is_dark_theme=?
+      UPDATE ${SettingProvider.tableName}
+      SET ${SettigsTableField.isDarkTheme}=?
       ''',
       [
         settings.isDarkTheme! ? 1 : 0
       ]
     );
   }
+}
+
+class SettigsTableField {
+  static const locale = 'locale';
+  static const isDarkTheme = 'is_dark_theme';
 }

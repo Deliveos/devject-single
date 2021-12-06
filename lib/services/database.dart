@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:devject_single/providers/projects_provider.dart';
+import 'package:devject_single/providers/settings_provider.dart';
 import 'package:devject_single/providers/tasks_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -58,10 +59,18 @@ class DatabaseProvider {
       );
     ''');
     await database.execute('''
-      CREATE TABLE settings (
-        locale VARCHAR(4),
-        is_dark_theme INTEGER
+      CREATE TABLE ${SettingProvider.tableName} (
+        ${SettigsTableField.locale} VARCHAR(10),
+        ${SettigsTableField.isDarkTheme} INTEGER
       );
     ''');
+    await database.execute(
+      '''
+      INSERT INTO ${SettingProvider.tableName}(
+        ${SettigsTableField.isDarkTheme}
+      )
+      VALUES(0)
+      '''
+    );
   }
 }

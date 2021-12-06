@@ -1,5 +1,6 @@
 <resources>
     <color name="gradientstart">#313E51</color>
     <color name="gradientend">#000000</color>
-    <color name="colorBackground">#FFFFFF</color>
+    <!-- TODO: replace color for dark theme -->
+    <color name="colorBackground">#000000</color>
 </resources>

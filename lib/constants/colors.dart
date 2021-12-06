@@ -10,6 +10,8 @@ const kButtonTextColor = Color(0xFFFFFFFF);
 const kTextColorForDarkTheme = Color(0xFFFFFFFF);
 const kBackgroundLightColorForDarkTheme = Color(0xFF313E51);
 const kBackgroundDarkColorForDarkTheme = Color(0xFF232D3B);
+const kSystemTextColorForDarkTheme = Color(0xFFE9E9E9);
+
 
 // For light theme
 const kBackgroundLightColorForLightTheme = Color(0xFFFFFFFF);

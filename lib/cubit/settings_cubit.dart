@@ -9,7 +9,7 @@ class SettingsCubit extends Cubit<Settings> {
   final SettingProvider _provider = SettingProvider.instance;
 
   Future<void> load() async {
-    if (state == Settings.byDefault()) {
+    if (state.props == Settings.byDefault().props) {
       emit(await _provider.getOne(1));
     }
   }

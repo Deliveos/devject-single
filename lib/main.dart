@@ -43,11 +43,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Devject Single',
             debugShowCheckedModeBanner: false,
-            themeMode: settingsState.isDarkTheme != null
-              ? ThemeMode.system 
-              :settingsState.isDarkTheme!
-                ? ThemeMode.dark
-                : ThemeMode.light,
+            themeMode: getThemeMode(settingsState.isDarkTheme),
             theme: lightTheme,
             darkTheme: darkTheme,
             supportedLocales: L10n.all,
@@ -71,5 +67,21 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+
+  ThemeMode getThemeMode(bool? isDarkTheme) {
+    ThemeMode themeMode = ThemeMode.system;
+    switch(isDarkTheme) {
+      case null:
+        themeMode = ThemeMode.system;
+        break;
+      case false:
+        themeMode = ThemeMode.light;
+        break;
+      case true:
+        themeMode = ThemeMode.dark;
+        break;
+    }
+    return themeMode;
   }
 }

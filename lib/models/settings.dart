@@ -1,7 +1,9 @@
 import 'dart:io';
 
-class Settings {
-  Settings({
+import 'package:equatable/equatable.dart';
+
+class Settings extends Equatable {
+  const Settings({
     this.locale,
     this.isDarkTheme = true
   }); 
@@ -36,4 +38,7 @@ class Settings {
     'locale:$locale '
     'isDarkTheme:$isDarkTheme }';
   }
+
+  @override
+  List<Object?> get props => [locale, isDarkTheme];
 }
