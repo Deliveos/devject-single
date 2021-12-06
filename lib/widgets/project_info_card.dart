@@ -1,14 +1,15 @@
 import 'dart:io';
-
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/models/project.dart';
-import 'package:devject_single/utils/screen_size.dart';
+import 'package:devject_single/pages/edit_project_page.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+
+import '../constants/sizes.dart';
+import '../models/project.dart';
+import '../utils/screen_size.dart';
 
 
 class ProjectInfoCard extends StatelessWidget {
@@ -21,7 +22,7 @@ class ProjectInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final DateFormat dateFormat = DateFormat.MMMEd(Platform.localeName);
+  final DateFormat dateFormat = DateFormat.yMEd(Platform.localeName);
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: ScreenSize.width(context, 5),
@@ -70,7 +71,12 @@ class ProjectInfoCard extends StatelessWidget {
                         else
                           InkWell(
                             onTap: () {
-                              // TODO: add handler
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => EditProjectPage(project)
+                                )
+                              );
                             },
                             child: Row(
                               children: <Widget>[
@@ -100,7 +106,12 @@ class ProjectInfoCard extends StatelessWidget {
                         else
                           InkWell(
                             onTap: () {
-                              // TODO: add handler
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => EditProjectPage(project)
+                                )
+                              );
                             },
                             child: Row(
                               children: <Widget>[
@@ -119,7 +130,12 @@ class ProjectInfoCard extends StatelessWidget {
               else
                 InkWell(
                   onTap: () {
-                    // TODO: add handler
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => EditProjectPage(project)
+                      )
+                    );
                   },
                   child: Row(
                     children: <Widget>[
@@ -205,4 +221,5 @@ class ProjectInfoCard extends StatelessWidget {
       ),
     );
   }
+  
 }

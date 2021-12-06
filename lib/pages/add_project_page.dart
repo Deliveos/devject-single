@@ -1,18 +1,20 @@
 import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/models/project.dart';
-import 'package:devject_single/utils/pick_date_range.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/button.dart';
-import 'package:devject_single/widgets/input_field.dart';
-import 'package:devject_single/widgets/input_text_editing_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+
+import '../constants/colors.dart';
+import '../constants/sizes.dart';
+import '../cubit/projects_cubit.dart';
+import '../models/project.dart';
+import '../utils/pick_date_range.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/button.dart';
+import '../widgets/input_field.dart';
+import '../widgets/input_text_editing_controller.dart';
+
 
 class AddProjectPage extends StatefulWidget {
   const AddProjectPage({Key? key}) : super(key: key);
@@ -151,7 +153,9 @@ class _AddProjectPageState extends State<AddProjectPage> {
                               */
                               PrimaryButton(
                                 onTap: () async {
-                                  if (_nameController.isValid) {
+                                  if (
+                                    _nameController.isValid 
+                                  ) {
                                     Project project = Project(
                                       name: _nameController.text.trim(),
                                       description: _description.text.trim(),

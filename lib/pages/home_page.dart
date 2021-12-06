@@ -1,13 +1,14 @@
-import 'package:devject_single/cubit/curret_tasks_cubit.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/models/task.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/current_task_container.dart';
-import 'package:devject_single/widgets/main_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../cubit/curret_tasks_cubit.dart';
+import '../cubit/projects_cubit.dart';
+import '../models/task.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/current_task_container.dart';
+import '../widgets/main_bottom_nav_bar.dart';
 
 
 class HomePage extends StatelessWidget {

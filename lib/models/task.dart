@@ -130,7 +130,7 @@ class Task extends Equatable{
     DateTime? startDate,
     DateTime? endDate,
     int? priority,
-    int? subtaskCount,
+    int? subtasksCount,
     int? complitedSubaskCount,
     int? status,
     bool? isComplited,
@@ -143,7 +143,7 @@ class Task extends Equatable{
     startDate: startDate ?? this.startDate,
     endDate: endDate ?? this.endDate,
     priority: priority ?? this.priority,
-    subtasksCount: subtaskCount ?? this.subtasksCount,
+    subtasksCount: subtasksCount ?? this.subtasksCount,
     complitedSubaskCount: complitedSubaskCount ?? this.complitedSubaskCount,
     status: status ?? this.status,
     isComplited: isComplited ?? this.isComplited

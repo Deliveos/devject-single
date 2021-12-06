@@ -1,23 +1,25 @@
 import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/cubit/selected_task_cubit.dart';
-import 'package:devject_single/cubit/tasks_cubit.dart';
-import 'package:devject_single/models/task.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/utils/pick_date_range.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/button.dart';
-import 'package:devject_single/widgets/input_field.dart';
-import 'package:devject_single/widgets/input_text_editing_controller.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+
+import '../constants/colors.dart';
+import '../constants/sizes.dart';
+import '../cubit/projects_cubit.dart';
+import '../cubit/selected_project_cubit.dart';
+import '../cubit/selected_task_cubit.dart';
+import '../cubit/tasks_cubit.dart';
+import '../models/task.dart';
+import '../providers/projects_provider.dart';
+import '../utils/pick_date_range.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/button.dart';
+import '../widgets/input_field.dart';
+import '../widgets/input_text_editing_controller.dart';
+
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({Key? key, this.task}) : super(key: key);
@@ -253,7 +255,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         // Update subtasksCount for selected task
         final updatedSelectedTask = selectedTaskCubit.state.copyWith(
           isComplited: false,
-          subtaskCount: selectedTaskCubit.state.subtasksCount + 1
+          subtasksCount: selectedTaskCubit.state.subtasksCount + 1
         );
         await context.read<TasksCubit>().update(
           updatedSelectedTask,
@@ -280,9 +282,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
     await pickDateRange(
       context,
       firstDate: BlocProvider.of<SelectedTaskCubit>(context).state.startDate ??
-        BlocProvider.of<SelectedProjectCubit>(context).state!.startDate!,
+        BlocProvider.of<SelectedProjectCubit>(context).state!.startDate ??
+        DateTime.now(),
       lastDate: BlocProvider.of<SelectedTaskCubit>(context).state.endDate ??
-        BlocProvider.of<SelectedProjectCubit>(context).state!.endDate!,
+        BlocProvider.of<SelectedProjectCubit>(context).state!.endDate ??
+        DateTime(DateTime.now().year + 10),
       callback: (DateTimeRange? dateRange) {
         if (dateRange == null) return;
         setState(() {
@@ -305,43 +309,4 @@ class _AddTaskPageState extends State<AddTaskPage> {
       }
     );
   }
-
-  // Future pickDateRange(BuildContext context) async {
-  //   final newDateRange = await showDateRangePicker(
-  //     cancelText: AppLocalizations.of(context)!.done,
-  //     builder: (context, Widget? child) => Theme(
-  //       data: Theme.of(context).copyWith(
-  //         appBarTheme: Theme.of(context).appBarTheme.copyWith(
-  //           backgroundColor: Theme.of(context).backgroundColor,
-  //           iconTheme: Theme.of(context)
-  //           .appBarTheme
-  //           .iconTheme!
-  //           .copyWith(color: Colors.white)
-  //         ),
-  //       ),
-  //       child: child!,
-  //     ),
-  //     context: context,
-  //     firstDate: BlocProvider.of<SelectedTaskCubit>(context).state?.startDate ??
-  //     BlocProvider.of<SelectedProjectCubit>(context).state!.startDate!,
-  //     lastDate: BlocProvider.of<SelectedTaskCubit>(context).state?.endDate ??
-  //     BlocProvider.of<SelectedProjectCubit>(context).state!.endDate!
-  //   );
-  //   if (newDateRange == null) return;
-  //   setState(() {
-  //     dateTimeRange = newDateRange;
-  //     _startDateController.text = dateFormat.format(dateTimeRange!.start);
-  //     _endDateController.text = dateFormat.format(dateTimeRange!.end);
-  //   });
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     content: Text(
-  //       dateFormat.format(dateTimeRange!.start) +
-  //           " - " +
-  //           dateFormat.format(dateTimeRange!.end),
-  //       style: Theme.of(context).textTheme.bodyText1,
-  //     ),
-  //     backgroundColor: Theme.of(context).backgroundColor,
-  //     duration: const Duration(milliseconds: 2000)
-  //   ));
-  // }
 }

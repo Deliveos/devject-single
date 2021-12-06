@@ -219,7 +219,7 @@ class CurrentTaskContainer extends StatelessWidget {
               )
             ]
           ),
-          if (task.goal != null)
+          if (task.goal != null && task.goal!.isNotEmpty)
           ...[
             SizedBox(
               height: ScreenSize.height(context, 1),

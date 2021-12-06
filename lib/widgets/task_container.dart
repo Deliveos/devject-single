@@ -1,18 +1,4 @@
 import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/curret_tasks_cubit.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/cubit/selected_task_cubit.dart';
-import 'package:devject_single/cubit/tasks_cubit.dart';
-import 'package:devject_single/models/status.dart';
-import 'package:devject_single/models/task.dart';
-import 'package:devject_single/pages/task_page.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/providers/tasks_provider.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/system_info_item.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/gestures.dart';
@@ -21,6 +7,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+
+import '../constants/colors.dart';
+import '../constants/sizes.dart';
+import '../cubit/curret_tasks_cubit.dart';
+import '../cubit/projects_cubit.dart';
+import '../cubit/selected_project_cubit.dart';
+import '../cubit/selected_task_cubit.dart';
+import '../cubit/tasks_cubit.dart';
+import '../models/status.dart';
+import '../models/task.dart';
+import '../pages/task_page.dart';
+import '../providers/projects_provider.dart';
+import '../providers/tasks_provider.dart';
+import '../utils/screen_size.dart';
+import '../widgets/system_info_item.dart';
+
 
 class TaskContainer extends StatelessWidget {
   const TaskContainer(this.task, {Key? key}) : super(key: key);

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 Future pickDateRange(
@@ -11,7 +10,6 @@ Future pickDateRange(
   }
   ) async {
     final newDateRange = await showDateRangePicker(
-      cancelText: AppLocalizations.of(context)!.done,
       builder: (context, Widget? child) => Theme(
         data: Theme.of(context).copyWith(
           appBarTheme: Theme.of(context).appBarTheme.copyWith(
@@ -26,11 +24,7 @@ Future pickDateRange(
       ),
       context: context,
       firstDate: firstDate,
-      //BlocProvider.of<SelectedTaskCubit>(context).state?.startDate ??
-      //BlocProvider.of<SelectedProjectCubit>(context).state!.startDate!,
       lastDate: lastDate
-      //BlocProvider.of<SelectedTaskCubit>(context).state?.endDate ??
-      //BlocProvider.of<SelectedProjectCubit>(context).state!.endDate!
     );
     if (callback != null) {
       callback(newDateRange);

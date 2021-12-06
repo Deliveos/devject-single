@@ -1,10 +1,11 @@
-import 'package:devject_single/pages/projects_page.dart';
-import 'package:devject_single/pages/settings_page.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/projects_page.dart';
+import '../pages/settings_page.dart';
 import '../pages/home_page.dart';
 import '../widgets/bottom_nav_bar.dart';
+
 
 class MainBottomNavBar extends StatelessWidget {
   const MainBottomNavBar({Key? key}) : super(key: key);

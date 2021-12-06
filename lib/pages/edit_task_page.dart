@@ -1,24 +1,25 @@
 import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/constants/sizes.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/cubit/selected_task_cubit.dart';
-import 'package:devject_single/cubit/tasks_cubit.dart';
-import 'package:devject_single/models/task.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/providers/tasks_provider.dart';
-import 'package:devject_single/utils/pick_date_range.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/button.dart';
-import 'package:devject_single/widgets/input_field.dart';
-import 'package:devject_single/widgets/input_text_editing_controller.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+
+import '../constants/colors.dart';
+import '../constants/sizes.dart';
+import '../cubit/projects_cubit.dart';
+import '../cubit/selected_project_cubit.dart';
+import '../cubit/selected_task_cubit.dart';
+import '../cubit/tasks_cubit.dart';
+import '../models/task.dart';
+import '../providers/projects_provider.dart';
+import '../providers/tasks_provider.dart';
+import '../utils/pick_date_range.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/button.dart';
+import '../widgets/input_field.dart';
+import '../widgets/input_text_editing_controller.dart';
 
 
 class EditTaskPage extends StatefulWidget {
@@ -60,7 +61,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
         title: AppLocalizations.of(context)!.editTask,
         actions: [
           PopupMenuButton(
-            color: Theme.of(context).backgroundColor.withOpacity(0.5),
+            color: Theme.of(context).scaffoldBackgroundColor,
             padding: EdgeInsets.zero,
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -242,10 +243,15 @@ class _EditTaskPageState extends State<EditTaskPage> {
     }
     await pickDateRange(
       context,
-      firstDate: parent?.startDate ?? 
-        BlocProvider.of<SelectedProjectCubit>(context).state!.startDate!,
-      lastDate: parent?.endDate ?? 
-        BlocProvider.of<SelectedProjectCubit>(context).state!.endDate!,
+      firstDate: 
+        BlocProvider.of<SelectedTaskCubit>(context).state.startDate ??
+        parent?.startDate ??
+        BlocProvider.of<SelectedProjectCubit>(context).state!.startDate ??
+        DateTime.now(),
+      lastDate: BlocProvider.of<SelectedTaskCubit>(context).state.endDate ??
+        parent?.endDate ??
+        BlocProvider.of<SelectedProjectCubit>(context).state!.endDate ??
+        DateTime(DateTime.now().year + 10),
       callback: (DateTimeRange? dateRange) {
         if (dateRange == null) return;
         setState(() {
@@ -310,6 +316,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
           ),
           InputField(
             controller: _controller,
+            hintText: AppLocalizations.of(context)!.taskName,
           ),
           SizedBox(
             height: ScreenSize.height(context, 3),
@@ -325,7 +332,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 final parent = await tasksProvider.getOne(selectedTaskCubit.state.parentId!);
                 await context.read<TasksCubit>().update(
                   parent.copyWith(
-                    subtaskCount: parent.subtasksCount - 1,
+                    subtasksCount: parent.subtasksCount - 1,
                     complitedSubaskCount: selectedTaskCubit.state.isComplited 
                     ? parent.complitedSubaskCount - 1
                     : parent.complitedSubaskCount
@@ -359,7 +366,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
               if (selectedTaskCubit.state.parentId != null) {
                 context.read<TasksCubit>().update(
                   selectedTaskCubit.state.copyWith(
-                    subtaskCount: selectedTaskCubit.state.subtasksCount - 1
+                    subtasksCount: selectedTaskCubit.state.subtasksCount - 1
                   ),
                   selectedTaskCubit.state.id
                 );
@@ -383,14 +390,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
           },
           child: Container(
             height: 50,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(30)),
+            decoration:  BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(kCardBorderRadius)),
               color: Colors.transparent,
-              border: Border(
-                top: BorderSide(color: Colors.red, width: 1),
-                left: BorderSide(color: Colors.red, width: 1),
-                right: BorderSide(color: Colors.red, width: 1),
-                bottom: BorderSide(color: Colors.red, width: 1)
+              border: Border.all(
+                color: Colors.red,
+                width: 1
               )
             ),
             child: Center(

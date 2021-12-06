@@ -1,19 +1,21 @@
 import 'dart:io';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/cubit/tasks_cubit.dart';
-import 'package:devject_single/models/project.dart';
-import 'package:devject_single/pages/project_page.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/system_info_item.dart';
-import 'package:expandable_text/expandable_text.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+
+import '../cubit/selected_project_cubit.dart';
+import '../cubit/tasks_cubit.dart';
+import '../models/project.dart';
+import '../pages/project_page.dart';
+import '../providers/projects_provider.dart';
+import '../utils/screen_size.dart';
+import '../widgets/system_info_item.dart';
+
 
 class ProjectContainer extends StatelessWidget {
   const ProjectContainer(this.project, {Key? key}) : super(key: key);

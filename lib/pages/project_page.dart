@@ -5,20 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants/sizes.dart';
-import '../cubit/projects_cubit.dart';
 import '../cubit/selected_project_cubit.dart';
 import '../cubit/tasks_cubit.dart';
 import '../models/project.dart';
 import '../models/task.dart';
 import '../pages/add_task_page.dart';
 import '../pages/edit_project_page.dart';
-import '../pages/projects_page.dart';
 import '../widgets/project_info_card.dart';
-import '../providers/projects_provider.dart';
 import '../utils/screen_size.dart';
 import '../widgets/appbar.dart';
-import '../widgets/input_field.dart';
-import '../widgets/input_text_editing_controller.dart';
 import '../widgets/task_container.dart';
 
 
@@ -156,74 +151,6 @@ class ProjectPage extends StatelessWidget {
           ),
         )
       ],
-    );
-  }
-
-    // TODO: Made delete project dialog
-    showDeleteProjectDialog(BuildContext context) async {
-    final InputTextEditingController _controller = InputTextEditingController();
-    return await showDialog(
-      context: context, 
-      builder: (context) => AlertDialog(
-        title: Text(" asd"),
-        content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: AppLocalizations.of(context)!.enter + " ",
-                  style: Theme.of(context).textTheme.bodyText1
-                ),
-                TextSpan(
-                  text: BlocProvider.of<SelectedProjectCubit>(context).state!.name,
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.red)
-                ),
-                TextSpan(
-                  text: " " + AppLocalizations.of(context)!.toDeleteThisProject,
-                  style: Theme.of(context).textTheme.bodyText1
-                )
-              ]
-            )
-          ),
-          InputField(
-            controller: _controller,
-          ),
-        ]
-        ),
-        actions: [
-          InkWell(
-            borderRadius: BorderRadius.circular(30),
-            onTap: () async {
-              if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
-                await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
-                await BlocProvider.of<ProjectsCubit>(context).load();
-                Navigator.of(context).pushNamedAndRemoveUntil(ProjectsPage.routeName, (route) => false);
-              }
-            },
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(kCardBorderRadius)
-                ),
-                color: Colors.transparent,
-                border: Border.all(
-                  color: Colors.red,
-                  width: 1
-                )
-              ),
-              child: Center(
-                child: Text(
-                  AppLocalizations.of(context)!.delete.toUpperCase(),
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.red),
-                )
-              ),
-            )
-          ),
-        ],
-      )
     );
   }
 }

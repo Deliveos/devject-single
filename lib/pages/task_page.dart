@@ -410,7 +410,12 @@ class TaskPage extends StatelessWidget {
                     else
                       InkWell(
                         onTap: () {
-                          // TODO: add handler
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => EditTaskPage(selectedTaskCubit.state)
+                            )
+                          );
                         },
                         child: Row(
                           children: <Widget>[
@@ -443,7 +448,12 @@ class TaskPage extends StatelessWidget {
                     else
                       InkWell(
                         onTap: () {
-                          // TODO: add handler
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => EditTaskPage(selectedTaskCubit.state)
+                            )
+                          );
                         },
                         child: Row(
                           children: <Widget>[

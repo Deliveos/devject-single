@@ -98,7 +98,7 @@ class _InputFieldState extends State<InputField> {
               ),
               border: InputBorder.none,
               hintText: widget.hintText,
-              hintStyle: Theme.of(context).textTheme.bodyText1,
+              hintStyle: Theme.of(context).textTheme.bodyText2,
               suffixIcon: widget.suffixIcon
             )
           )

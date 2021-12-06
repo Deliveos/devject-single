@@ -1,22 +1,24 @@
 import 'dart:io';
-import 'package:devject_single/constants/colors.dart';
-import 'package:devject_single/cubit/projects_cubit.dart';
-import 'package:devject_single/cubit/selected_project_cubit.dart';
-import 'package:devject_single/models/project.dart';
-import 'package:devject_single/pages/projects_page.dart';
-import 'package:devject_single/providers/projects_provider.dart';
-import 'package:devject_single/utils/pick_date_range.dart';
-import 'package:devject_single/utils/screen_size.dart';
-import 'package:devject_single/widgets/appbar.dart';
-import 'package:devject_single/widgets/background.dart';
-import 'package:devject_single/widgets/button.dart';
-import 'package:devject_single/widgets/input_field.dart';
-import 'package:devject_single/widgets/input_text_editing_controller.dart';
+import 'package:devject_single/constants/sizes.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+
+import '../constants/colors.dart';
+import '../cubit/projects_cubit.dart';
+import '../cubit/selected_project_cubit.dart';
+import '../models/project.dart';
+import '../pages/projects_page.dart';
+import '../providers/projects_provider.dart';
+import '../utils/pick_date_range.dart';
+import '../utils/screen_size.dart';
+import '../widgets/appbar.dart';
+import '../widgets/button.dart';
+import '../widgets/input_field.dart';
+import '../widgets/input_text_editing_controller.dart';
+
 
 class EditProjectPage extends StatefulWidget {
   const EditProjectPage(this.project, {Key? key}) : super(key: key);
@@ -58,151 +60,163 @@ class _EditProjectPageState extends State<EditProjectPage> {
         title: AppLocalizations.of(context)!.editProject,
         actions: [
           PopupMenuButton(
-            color: Theme.of(context).backgroundColor.withOpacity(0.5),
+            color: Theme.of(context).scaffoldBackgroundColor,
             padding: EdgeInsets.zero,
             itemBuilder: (context) => [
-            PopupMenuItem(
-              padding: const EdgeInsets.only(left: 5),
-              onTap: () {
-                showBottomSheet(
-                  context: context, builder: showDeleteProjectDialog
-                );
-              },
-              child: Row(
-                children: [
-                  const Icon(
-                    FluentIcons.delete_24_regular,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(width: 3),
-                  Text(AppLocalizations.of(context)!.delete, )
-                ]
+              PopupMenuItem(
+                padding: const EdgeInsets.only(left: 5),
+                onTap: () {
+                  showBottomSheet(
+                    context: context, builder: showDeleteProjectDialog
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      FluentIcons.delete_24_regular,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(AppLocalizations.of(context)!.delete, )
+                  ]
+                )
               )
-            )
-          ])
+            ]
+          )
         ]
       ),
       body: CustomScrollView(
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate([
-              Background(
+              SizedBox(
+                width: ScreenSize.width(context, 100),
+                height: ScreenSize.height(context, 100),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Form(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: ScreenSize.height(context, 1),
+                        horizontal: ScreenSize.width(context, 5)
+                    ),
+                    padding: EdgeInsets.all(ScreenSize.width(context, 5)),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(kCardBorderRadius)
+                        ),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            blurRadius: 10,
+                            color: Colors.black.withOpacity(0.07),
+                            offset: Offset.zero,
+                            spreadRadius: 0
+                          )
+                        ]
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        InputField(
+                          controller: _nameController,
+                          hintText: AppLocalizations.of(context)!.projectName,
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty || value.trim() == "") {
+                              return AppLocalizations.of(context)!
+                              .fieldCanNotBeEmpty;
+                            }
+                          }
+                        ),
+                        SizedBox(
+                          height: ScreenSize.height(context, 3),
+                        ),
+                        /*
+                        * DESCRIPTON FIELD
+                        */
+                        InputField(
+                          controller: _descriptionController,
+                          minLines: 1,
+                          maxLines: 8,
+                          hintText: AppLocalizations.of(context)!.description
+                        ),
+                        SizedBox(
+                          height: ScreenSize.height(context, 3),
+                        ),
+                        /*
+                        * DATES FIELDS
+                        */
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
-                            /*
-                            * NAME FIELD
-                            */
                             InputField(
-                              controller: _nameController,
-                              hintText: AppLocalizations.of(context)!.projectName,
-                              validator: (String? value) {
-                                if (value == null || value.isEmpty || value.trim() == "") {
-                                  return AppLocalizations.of(context)!
-                                  .fieldCanNotBeEmpty;
-                                }
+                              readOnly: true,
+                              width: ScreenSize.width(context, 35),
+                              controller: _startDateController,
+                              hintText: AppLocalizations.of(context)!
+                                  .startDate,
+                              onTap: () async {
+                                await pickDateRangeForProject(context);
                               }
                             ),
-                            SizedBox(
-                              height: ScreenSize.height(context, 3),
+                            Text(
+                              "-",
+                              style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
                             ),
-                            /*
-                            * DESCRIPTON FIELD
-                            */
                             InputField(
-                              controller: _descriptionController,
-                              minLines: 1,
-                              maxLines: 8,
-                              hintText: AppLocalizations.of(context)!.description
-                            ),
-                            SizedBox(
-                              height: ScreenSize.height(context, 3),
-                            ),
-                            /*
-                            * DATES FIELDS
-                            */
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                InputField(
-                                  readOnly: true,
-                                  width: ScreenSize.width(context, 40),
-                                  controller: _startDateController,
-                                  hintText: AppLocalizations.of(context)!
-                                      .startDate,
-                                  onTap: () async {
-                                    await pickDateRangeForProject(context);
-                                  }
-                                ),
-                                Text(
-                                  "-",
-                                  style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                ),
-                                InputField(
-                                  readOnly: true,
-                                  width: ScreenSize.width(context, 40),
-                                  controller: _endDateController,
-                                  hintText: AppLocalizations.of(context)!
-                                  .endDate,
-                                  onTap: () async {
-                                    await pickDateRangeForProject(context);
-                                  }
-                                ),
-                              ]
-                            ),
-                            SizedBox(
-                              height: ScreenSize.height(context, 3),
-                            ),
-                            /*
-                            * SAVE PROJECT BUTTON
-                            */
-                            PrimaryButton(
+                              readOnly: true,
+                              width: ScreenSize.width(context, 35),
+                              controller: _endDateController,
+                              hintText: AppLocalizations.of(context)!
+                              .endDate,
                               onTap: () async {
-                                if (_nameController.text.trim() != '') {
-                                  Project project = Project(
-                                    id: widget.project.id,
-                                    name: _nameController.text.trim(),
-                                    description: _descriptionController.text.trim().isNotEmpty 
-                                    ? _descriptionController.text.trim()
-                                    : null,
-                                    startDate: dateTimeRange?.start,
-                                    endDate: dateTimeRange?.end
-                                  );
-                                  await BlocProvider.of<ProjectsCubit>(context).update(project);
-                                  BlocProvider.of<SelectedProjectCubit>(context).select(project);
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.save.toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                  color: kButtonTextColor
-                                )
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30, 
-                                vertical: 5
-                              )
-                            )
+                                await pickDateRangeForProject(context);
+                              }
+                            ),
                           ]
-                        )
-                      ),
-                      SizedBox(height: ScreenSize.height(context, 3))
-                    ]
+                        ),
+                        SizedBox(
+                          height: ScreenSize.height(context, 3),
+                        ),
+                        /*
+                        * SAVE PROJECT BUTTON
+                        */
+                        PrimaryButton(
+                          onTap: () async {
+                            if (_nameController.text.trim() != '') {
+                              Project project = Project(
+                                id: widget.project.id,
+                                name: _nameController.text.trim(),
+                                description: _descriptionController.text.trim().isNotEmpty 
+                                ? _descriptionController.text.trim()
+                                : null,
+                                startDate: dateTimeRange?.start,
+                                endDate: dateTimeRange?.end
+                              );
+                              await BlocProvider.of<ProjectsCubit>(context).update(project);
+                              BlocProvider.of<SelectedProjectCubit>(context).select(project);
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.save.toUpperCase(),
+                            style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                              color: kButtonTextColor
+                            )
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30, 
+                            vertical: 5
+                          )
+                        ),
+                        SizedBox(height: ScreenSize.height(context, 3))
+                      ]
+                    ),
                   )
-                )
+                ),
               )
             ])
           )
@@ -266,14 +280,17 @@ class _EditProjectPageState extends State<EditProjectPage> {
           ),
           InputField(
             controller: _controller,
+            hintText: AppLocalizations.of(context)!.projectName,
           ),
           SizedBox(
             height: ScreenSize.height(context, 3),
           ),
           InkWell(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(kCardBorderRadius),
             onTap: () async {
-              if (_controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name) {
+              if (
+                _controller.text.trim() == BlocProvider.of<SelectedProjectCubit>(context).state!.name
+              ) {
                 await ProjectsProvider.instance.remove(BlocProvider.of<SelectedProjectCubit>(context).state!.id!);
                 await BlocProvider.of<ProjectsCubit>(context).load();
                 Navigator.of(context).pushNamedAndRemoveUntil(ProjectsPage.routeName, (route) => false);
@@ -281,14 +298,12 @@ class _EditProjectPageState extends State<EditProjectPage> {
             },
             child: Container(
               height: 50,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(kCardBorderRadius)),
                 color: Colors.transparent,
-                border: Border(
-                  top: BorderSide(color: Colors.red, width: 1),
-                  left: BorderSide(color: Colors.red, width: 1),
-                  right: BorderSide(color: Colors.red, width: 1),
-                  bottom: BorderSide(color: Colors.red, width: 1)
+                border: Border.all(
+                  color: Colors.red,
+                  width: 1
                 )
               ),
               child: Center(
