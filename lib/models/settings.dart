@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 class Settings extends Equatable {
   const Settings({
     this.locale,
-    this.isDarkTheme = true
+    this.isDarkTheme
   }); 
 
   final String? locale;
@@ -17,7 +17,7 @@ class Settings extends Equatable {
 
   Settings.byDefault():
   locale = Platform.localeName,
-  isDarkTheme = true;
+  isDarkTheme = null;
 
   Map<String, dynamic> toMap() => {
     'locale': locale,

@@ -69,7 +69,7 @@ class DatabaseProvider {
       INSERT INTO ${SettingProvider.tableName}(
         ${SettigsTableField.isDarkTheme}
       )
-      VALUES(0)
+      VALUES(NULL)
       '''
     );
   }

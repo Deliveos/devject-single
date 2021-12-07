@@ -40,33 +40,42 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<SettingsCubit, Settings>(
         builder: (context, settingsState) {
-          return MaterialApp(
-            title: 'Devject Single',
-            debugShowCheckedModeBanner: false,
-            themeMode: getThemeMode(settingsState.isDarkTheme),
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            supportedLocales: L10n.all,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate
-            ],
-            initialRoute: HomePage.routeName,
-            routes: {
-              HomePage.routeName: (context) => const HomePage(),
-              ProjectsPage.routeName: (context) => const ProjectsPage(),
-              ProjectPage.routeName: (context) => const ProjectPage(),
-              TaskPage.routeName: (context) => const TaskPage(),
-              SettingsPage.routeName: (context) => const SettingsPage(),
-              AddProjectPage.routeName: (context) => const AddProjectPage(),
-              AddTaskPage.routeName: (context) => const AddTaskPage()
-            },
+          
+          return FutureBuilder<bool?>(
+            future: loadTheme(context),
+            builder: (context, AsyncSnapshot<bool?> snapshot) => MaterialApp(
+              title: 'Devject Single',
+              debugShowCheckedModeBanner: false,
+              themeMode: getThemeMode(snapshot.data),
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              supportedLocales: L10n.all,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate
+              ],
+              initialRoute: HomePage.routeName,
+              routes: {
+                HomePage.routeName: (context) => const HomePage(),
+                ProjectsPage.routeName: (context) => const ProjectsPage(),
+                ProjectPage.routeName: (context) => const ProjectPage(),
+                TaskPage.routeName: (context) => const TaskPage(),
+                SettingsPage.routeName: (context) => const SettingsPage(),
+                AddProjectPage.routeName: (context) => const AddProjectPage(),
+                AddTaskPage.routeName: (context) => const AddTaskPage()
+              },
+            ),
           );
         },
       ),
     );
+  }
+
+  Future<bool> loadTheme(BuildContext context) async {
+    await context.read<SettingsCubit>().load();
+    return context.read<SettingsCubit>().state.isDarkTheme!;
   }
 
   ThemeMode getThemeMode(bool? isDarkTheme) {
